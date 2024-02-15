@@ -14,7 +14,7 @@ int WindDirection(int pin, int reference=1023){
 
     int var = analogRead(pin);
 
-    int voltage = var * ( MAX_VOLTAGE / reference ) ;
+    double voltage = (double)var * ( (double)MAX_VOLTAGE / (double)reference ) ;
 
     int wind_direction = map(voltage, 0 , 3.8 , 0 , 359 );
 
@@ -23,11 +23,11 @@ int WindDirection(int pin, int reference=1023){
 
 void setup() {
 //	pinMode(PIN(X),OUTPUT);
-
-	  pinMode(A3,INPUT);
+    Serial.begin(9600);
+	pinMode(A4,INPUT);
 }
 
 void loop() {
-	Serial.println(WindDirection(A3));
+	Serial.println(WindDirection(A4));
 	delay(DELAY);
 }
