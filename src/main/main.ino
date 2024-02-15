@@ -8,15 +8,21 @@
 //#include "pins.h"
 
 #define DELAY 100
-#define MAX_VOLTAGE 5
+#define VOLTAGE_REF 5
 
-int WindDirection(int pin, int reference=1023){
+
+double mapd(double x, double in_min, double in_max, double out_min, double out_max){     
+    return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min; 
+}
+
+
+int WindDirection(int pin, int Max_ADC_Ret = 1023){
 
     int var = analogRead(pin);
 
-    double voltage = (double)var * ( (double)MAX_VOLTAGE / (double)reference ) ;
+    double voltage = (double)var * ( (double)VOLTAGE_REF / (double)Max_ADC_Ret ) ;
 
-    int wind_direction = map(voltage, 0 , 3.8 , 0 , 359 );
+    int wind_direction = mapd(voltage, 0 , 3.8 , 0 , 359 );
 
     return wind_direction ;
 }
