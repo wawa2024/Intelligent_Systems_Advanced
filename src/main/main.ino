@@ -14,7 +14,7 @@ namespace var
     int refresh_rate=       100,
         baud_rate=          9600,
         ref_voltage=        5,
-        wind_speed=         0
+        wind_speed_freq=    0
         ;
 }
 
@@ -84,7 +84,8 @@ int WindDirection(int pin)
 void PrintWindDirection(void)
 {
     Serial.print("Wind Direction: ");
-    Serial.println(WindDirection(pin::wind_direction));
+    Serial.print(WindDirection(pin::wind_direction));
+    Serial.println(" degrees");
 }
 
     ////////////////
@@ -93,14 +94,16 @@ void PrintWindDirection(void)
 
 void WindSpeed(void)
 {
-    var::wind_speed += digitalRead(pin::wind_speed);
+    var::wind_speed_freq += digitalRead(pin::wind_speed);
 }
 
 void PrintWindSpeed(void)
 {
+    float wind_speed = (float)var::wind_speed_freq * 0.699 - 0.24;
     Serial.print("Wind Speed: ");
-    Serial.println(var::wind_speed);
-    var::wind_speed = 0 ;
+    Serial.print(wind_speed);
+    Serial.println(" m/s");
+    var::wind_speed_freq = 0 ;
 }
 
     //////////
@@ -121,9 +124,9 @@ void InitPins(int* a, int size, int mode)
 
 void setup()
 {
-    int a[] = { pin::wind_direction , pin::wind_speed };
+    int input_pins[] = { pin::wind_direction };
 
-    InitPins(a,sizeof(a)/sizeof(int),INPUT);
+    InitPins(input_pins,sizeof(input_pins)/sizeof(int),INPUT);
 
     Serial.begin(var::baud_rate);
 
