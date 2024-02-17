@@ -11,19 +11,51 @@
 
 namespace var
 {
-    int refresh_rate    = 100,
-        baud_rate       = 9600,
-        ref_voltage     = 5,
-        wind_speed      = 0
+    int refresh_rate=       100,
+        baud_rate=          9600,
+        ref_voltage=        5,
+        wind_speed=         0
         ;
 }
 
 namespace pin
 {
-    int wind_direction = A4,
-        wind_speed     = 2
+    int wind_direction=     A4,
+        wind_speed=         13,
+        rs=                 12,
+        enable=             11,
+        lcd_1=              1,
+        lcd_2=              2,
+        lcd_3=              3,
+        lcd_4=              4
         ;
 }
+
+namespace dpy
+{
+    int columns=            16,
+        rows=               2
+        ;
+}
+
+    /////////////////
+    // LCD Display //
+    /////////////////
+
+/*
+#include <LiquidCrystal.h>
+
+LiquidCrystal lcd(pin::rs,pin::enable,
+                  pin::lcd_1,pin::lcd_2,pin::lcd_3,pin::lcd_4
+                 );
+
+void InitLCD(void)
+{
+    lcd.begin(dpy::columns,dpy::rows);
+    lcd.noCursor();
+    lcd.print("LCD Initialized");
+}
+*/
 
     ////////////////////
     // Wind Direction //
