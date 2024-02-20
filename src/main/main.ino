@@ -31,7 +31,7 @@ namespace pin
     // Sensors
     int 
         wind_direction=     A4,
-        wind_speed=         11
+        wind_speed=         1
         ;
     int
         rs=                 12,
@@ -108,7 +108,7 @@ void WindSpeed_irq(void)
 {
     t_begin = t_end;
     t_end = millis();
-    var::wind_speed_freq = 1000 / ( var::t_end - var::t_begin ) ;
+    var::wind_speed_freq = 1000 / (double)( var::t_end - var::t_begin ) ;
 }
 
 void PrintWindSpeed(void)
