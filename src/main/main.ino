@@ -110,9 +110,9 @@ void PrintWindSpeed(void)
     Serial.println(" m/s");
 }
 
-    //////////
-    // Main //
-    //////////
+    ///////////
+    //General//
+    ///////////
 
 void PrintStats(void)
 {
@@ -126,11 +126,15 @@ void InitPins(int* a, int size, int mode)
         pinMode(a[i],mode);
 }
 
+    //////////
+    // Main //
+    //////////
+
 void setup()
 {
     int input_pins[] = { pin::wind_direction };
 
-    InitPins(input_pins,sizeof(input_pins)/sizeof(int),INPUT);
+    InitPins(input_pins,sizeof(input_pins) / sizeof(int),INPUT);
 
     Serial.begin(var::baud_rate);
 
