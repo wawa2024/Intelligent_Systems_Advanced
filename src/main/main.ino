@@ -12,8 +12,9 @@ namespace var
 {
     int     refresh_rate=       100,
             baud_rate=          9600,
-            ref_voltage=        5,
-            wind_speed_freq=    0;
+            ref_voltage=        5;
+
+    double wind_speed_freq=    0;
 
     unsigned long   t_begin=            0,
                     t_end=              0
@@ -98,7 +99,7 @@ void WindSpeed_irq(void)
 {
     t_begin = t_end;
     t_end = millis();
-    var::wind_speed_freq = 1 / var::t_end - var::t_begin;
+    var::wind_speed_freq = 1 / ( ( var::t_end - var::t_begin ) / 1000 ) ;
 }
 
 void PrintWindSpeed(void)
