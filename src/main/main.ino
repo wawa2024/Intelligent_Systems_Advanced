@@ -24,13 +24,13 @@ namespace var
 namespace pin
 {
     int wind_direction=     A4,
-        wind_speed=         13,
+        wind_speed=         11,
         rs=                 12,
         enable=             11,
-        lcd_1=              1,
-        lcd_2=              2,
-        lcd_3=              3,
-        lcd_4=              4
+        lcd_1=              3,
+        lcd_2=              4,
+        lcd_3=              5,
+        lcd_4=              6
         ;
 }
 
