@@ -14,7 +14,9 @@ namespace var
     int refresh_rate=       100,
         baud_rate=          9600,
         ref_voltage=        5,
-        wind_speed_freq=    0
+        wind_speed_freq=    0,
+        t_begin=            0,
+        t_end=              0
         ;
 }
 
@@ -92,9 +94,10 @@ void PrintWindDirection(void)
     // Wind Speed //
     ////////////////
 
-void WindSpeed(void)
+void WindSpeed_irq(void)
 {
-    var::wind_speed_freq += digitalRead(pin::wind_speed);
+    t_begin = t_end;
+    t_end = millis();
 }
 
 void PrintWindSpeed(void)
@@ -132,7 +135,7 @@ void setup()
 
     attachInterrupt(
         digitalPinToInterrupt(pin::wind_speed),
-        WindSpeed,
+        WindSpeed_irq,
         RISING
     );
 }
