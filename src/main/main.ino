@@ -10,21 +10,30 @@
 
 namespace var
 {
-    int     refresh_rate=       100,
-            baud_rate=          9600,
-            ref_voltage=        5;
+    int     
+        refresh_rate=       100,
+        baud_rate=          9600,
+        ref_voltage=        5
+        ;
 
-    double wind_speed_freq=    0;
+    double 
+            wind_speed_freq=    0
+            ;
 
-    unsigned long   t_begin=            0,
+    unsigned long   
+                    t_begin=            0,
                     t_end=              0
                     ;
 }
 
 namespace pin
 {
-    int wind_direction=     A4,
-        wind_speed=         11,
+    // Sensors
+    int 
+        wind_direction=     A4,
+        wind_speed=         11
+        ;
+    int
         rs=                 12,
         enable=             11,
         lcd_1=              3,
@@ -99,7 +108,7 @@ void WindSpeed_irq(void)
 {
     t_begin = t_end;
     t_end = millis();
-    var::wind_speed_freq = 1 / ( ( var::t_end - var::t_begin ) / 1000 ) ;
+    var::wind_speed_freq = 1000 / ( var::t_end - var::t_begin ) ;
 }
 
 void PrintWindSpeed(void)
@@ -120,24 +129,20 @@ void PrintStats(void)
     PrintWindSpeed();
 }
 
-void InitPins(int* a, int size, int mode)
-{
-    for(int i=0 ; i < size ; i++)
-        pinMode(a[i],mode);
-}
-
     //////////
     // Main //
     //////////
 
 void setup()
 {
-    int input_pins[] = { pin::wind_direction };
-
-    InitPins(input_pins,sizeof(input_pins) / sizeof(int),INPUT);
 
     Serial.begin(var::baud_rate);
 
+        /////////////// 
+        // Init pins //
+        ///////////////
+
+    pinMode(pin::wind_direction,INPUT);
     attachInterrupt(
         digitalPinToInterrupt(pin::wind_speed),
         WindSpeed_irq,
