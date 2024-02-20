@@ -98,7 +98,7 @@ void WindSpeed_irq(void)
 {
     t_begin = t_end;
     t_end = millis();
-    var::wind_speed_freq = 1 / (var::t_end - var::t_begin;
+    var::wind_speed_freq = 1 / var::t_end - var::t_begin;
 }
 
 void PrintWindSpeed(void)
