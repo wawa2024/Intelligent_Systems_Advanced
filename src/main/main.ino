@@ -2,7 +2,6 @@
  * Display 16x4 Library: 	liquid-crystal	
  * 
  *	
- *	
  */
 
     //////////////////////
@@ -11,13 +10,14 @@
 
 namespace var
 {
-    int refresh_rate=       100,
-        baud_rate=          9600,
-        ref_voltage=        5,
-        wind_speed_freq=    0,
-        t_begin=            0,
-        t_end=              0
-        ;
+    int     refresh_rate=       100,
+            baud_rate=          9600,
+            ref_voltage=        5,
+            wind_speed_freq=    0;
+
+    unsigned long   t_begin=            0,
+                    t_end=              0
+                    ;
 }
 
 namespace pin
@@ -102,7 +102,7 @@ void WindSpeed_irq(void)
 
 void PrintWindSpeed(void)
 {
-    float wind_speed = (float)var::wind_speed_freq * 0.699 - 0.24;
+    float wind_speed = (float)( 1 / var::t_end - var::t_begin ) * 0.699 - 0.24;
     Serial.print("Wind Speed: ");
     Serial.print(wind_speed);
     Serial.println(" m/s");
