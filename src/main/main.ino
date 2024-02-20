@@ -98,15 +98,15 @@ void WindSpeed_irq(void)
 {
     t_begin = t_end;
     t_end = millis();
+    var::wind_speed_freq = 1 / (var::t_end - var::t_begin;
 }
 
 void PrintWindSpeed(void)
 {
-    float wind_speed = (float)( 1 / var::t_end - var::t_begin ) * 0.699 - 0.24;
+    float wind_speed = var::wind_speed_freq * 0.699 - 0.24;
     Serial.print("Wind Speed: ");
     Serial.print(wind_speed);
     Serial.println(" m/s");
-    var::wind_speed_freq = 0 ;
 }
 
     //////////
