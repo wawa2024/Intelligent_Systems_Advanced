@@ -19,13 +19,13 @@ namespace var
         ;
 
     double 
-            wind_speed_freq=    0
+            wind_speed_freq=    0,
+            t_array[T_SIZE]
             ;
 
     unsigned long   
                     t_begin=            0,
-                    t_end=              0,
-                    t_array[T_SIZE]     
+                    t_end=              0
                     ;
 
     const unsigned long
@@ -120,7 +120,7 @@ void WindSpeed_irq(void)
     var::t_end = millis();
 
     var::t_i++; 
-    var::t_i = ( var::t_i < var::t_size ) ? var::t_i : 0 ;
+    var::t_i = var::t_i < var::t_size ? var::t_i : 0 ;
 
     var::t_array[var::t_i] = 1000 / (double)( var::t_end - var::t_begin ) ;
 }
