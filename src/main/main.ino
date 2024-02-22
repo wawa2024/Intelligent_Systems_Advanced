@@ -107,11 +107,11 @@ void PrintWindDirection(void)
 void WindSpeed_irq(void)
 {
     delayMicroseconds(5);
-    unsigned long var = millis();
-    if(var)
+    unsigned long tmp = millis();
+    if(tmp)
     {
         var::t_begin = var::t_end;
-        var::t_end = millis();
+        var::t_end = tmp;
         var::wind_speed_freq = 1000 / (double)( var::t_end - var::t_begin ) ;
     }
 }
