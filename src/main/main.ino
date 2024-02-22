@@ -8,6 +8,8 @@
     // Global Variables //
     //////////////////////
 
+#define T_SIZE 10
+
 namespace var
 {
     int     
@@ -22,8 +24,16 @@ namespace var
 
     unsigned long   
                     t_begin=            0,
-                    t_end=              0
+                    t_end=              0,
+                    t_array[T_SIZE]     
                     ;
+
+    const unsigned long
+                    t_size=            T_SIZE 
+                    ;
+    int
+        t_i=-1
+        ;
 }
 
 namespace pin
@@ -108,12 +118,30 @@ void WindSpeed_irq(void)
 {
     var::t_begin = var::t_end;
     var::t_end = millis();
-    var::wind_speed_freq = 1000 / (double)( var::t_end - var::t_begin ) ;
+
+    var::t_i++; 
+    var::t_i = ( var::t_i < var::t_size ) ? var::t_i : 0 ;
+
+    var::t_array[var::t_i] = 1000 / (double)( var::t_end - var::t_begin ) ;
+}
+
+void WindSpeed_average(void)
+{
+    double tmp=0;
+
+    for(int i=0 ; i < var::t_size ; i++)
+    {
+        tmp = tmp + ( var::t_array[i] * 0.699 - 0.24 ) ;    
+    }
+    var::wind_speed_freq = tmp / var::t_size;
 }
 
 void PrintWindSpeed(void)
 {
-    float wind_speed = var::wind_speed_freq * 0.699 - 0.24;
+    WindSpeed_average();
+
+    float wind_speed = var::wind_speed_freq;
+
     Serial.print("Wind Speed: ");
     Serial.print(wind_speed);
     Serial.println(" m/s");
@@ -135,7 +163,6 @@ void PrintStats(void)
 
 void setup()
 {
-
     Serial.begin(var::baud_rate);
 
         /////////////// 
