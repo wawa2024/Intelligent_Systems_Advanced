@@ -11,7 +11,7 @@
 namespace var
 {
     int     
-        refresh_rate=       100,
+        refresh_rate=       1000,
         baud_rate=          9600,
         ref_voltage=        5
         ;
@@ -106,8 +106,8 @@ void PrintWindDirection(void)
 
 void WindSpeed_irq(void)
 {
-    t_begin = t_end;
-    t_end = millis();
+    var::t_begin = var::t_end;
+    var::t_end = millis();
     var::wind_speed_freq = 1000 / (double)( var::t_end - var::t_begin ) ;
 }
 
@@ -153,5 +153,5 @@ void setup()
 void loop()
 {
     PrintStats();
-	delayMicroseconds(var::refresh_rate);
+	delay(var::refresh_rate);
 }
