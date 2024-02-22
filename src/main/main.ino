@@ -20,7 +20,7 @@ namespace var
 
     double 
             wind_speed_freq=    0,
-            t_array[T_SIZE]
+            t_array[T_SIZE]=    {}
             ;
 
     unsigned long   
