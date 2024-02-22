@@ -106,9 +106,14 @@ void PrintWindDirection(void)
 
 void WindSpeed_irq(void)
 {
-    var::t_begin = var::t_end;
-    var::t_end = millis();
-    var::wind_speed_freq = 1000 / (double)( var::t_end - var::t_begin ) ;
+    delayMicroseconds(5);
+    unsigned long var = millis();
+    if(var)
+    {
+        var::t_begin = var::t_end;
+        var::t_end = millis();
+        var::wind_speed_freq = 1000 / (double)( var::t_end - var::t_begin ) ;
+    }
 }
 
 void PrintWindSpeed(void)
@@ -153,5 +158,6 @@ void setup()
 void loop()
 {
     PrintStats();
+    Serial.println("Foobar");
 	delay(var::refresh_rate);
 }
