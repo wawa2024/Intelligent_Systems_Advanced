@@ -131,16 +131,24 @@ void WindSpeed_average(void)
 
     for(int i=0 ; i < var::t_size ; i++)
     {
-        tmp = tmp + ( var::t_array[i] * 0.699 - 0.24 ) ;    
+        tmp = tmp + var::t_array[i] * 0.699 ;    
+        tmp -= tmp > 0 ? 0.24 : 0 ;
+        Serial.println(tmp);
     }
     var::wind_speed_freq = tmp / var::t_size;
+}
+
+void WindSpeed_reset(void)
+{
+    for(int i=0 ; i < var::t_size ; i++)
+        var::t_array[i]=0;
 }
 
 void PrintWindSpeed(void)
 {
     WindSpeed_average();
-
     float wind_speed = var::wind_speed_freq;
+    WindSpeed_reset();
 
     Serial.print("Wind Speed: ");
     Serial.print(wind_speed);
