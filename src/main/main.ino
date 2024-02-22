@@ -31,7 +31,7 @@ namespace pin
     // Sensors
     int 
         wind_direction=     A4,
-        wind_speed=         1
+        wind_speed=         2
         ;
     int
         rs=                 12,
@@ -147,6 +147,7 @@ void setup()
         // Init pins //
         ///////////////
 
+    pinMode(pin::wind_speed, INPUT);
     pinMode(pin::wind_direction,INPUT);
     attachInterrupt(
         digitalPinToInterrupt(pin::wind_speed),
