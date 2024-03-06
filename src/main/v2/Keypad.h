@@ -32,7 +32,7 @@ struct Keypad
         {
             digitalWrite( pin.input[i] , HIGH );
             for(int j=0 ; j < bus_size ; j++)
-                keypad[ i + j ] = ( i + 1 ) * digitalRead( pin.output[j] );
+                keypad[ ( i * 4 ) + j ] = ( i + 1 ) * digitalRead(pin.output[j]);
             digitalWrite( pin.input[i] , LOW );
         }
     }
