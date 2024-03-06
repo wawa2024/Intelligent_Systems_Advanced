@@ -21,9 +21,10 @@ struct Keypad
     Keypad()
     {
         for(int i=0; i < bus_size ; i++)
+        {
             pinMode(pin.input[i] , INPUT);
-        for(int i=0; i < bus_size ; i++)
             pinMode(pin.output[i] , OUTPUT);
+        }
     }
 
     void scan(void)
@@ -39,13 +40,20 @@ struct Keypad
 
     void exec(void)
     {
-        scan();
+        scan(); // The loop should be 'exec -> main -> scan -> repeat'
+                // Remove this later.
+
         for(int i=0 ; i < keycodes ; i++)
         {
             unsigned char keycode = keypad[i];
-            switch(keycode)
+
+            // A global jmptbl could replace this.
+            // Would allow multi hierarchy management.
+            // A common "Get" object API should be used to set
+            // internal flags.
+            switch(keycode) 
             {
-                default: 
+                default:
                     Serial.print("{ Keycode: ");
                     Serial.print(i);
                     Serial.print(", State: ");
