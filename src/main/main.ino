@@ -1,9 +1,6 @@
-/* 
- * Display 16x4 Library: 	liquid-crystal	
- * 
- *	
- */
-
+/******************************************************************************
+ * File: ./main.ino
+ ******************************************************************************/
     //////////////////////
     // Global Variables //
     //////////////////////
@@ -19,18 +16,18 @@ namespace var
         ;
 
     double 
-            wind_speed_freq=    0,
-            t_array[T_SIZE]=    {}
-            ;
+        wind_speed_freq=    0,
+        t_array[T_SIZE]=    {}
+        ;
 
     unsigned long   
-                    t_begin=            0,
-                    t_end=              0
-                    ;
+        t_begin=            0,
+        t_end=              0
+        ;
 
     const unsigned long
-                    t_size=            T_SIZE 
-                    ;
+        t_size=            T_SIZE 
+        ;
     int
         t_i=-1
         ;
@@ -43,41 +40,7 @@ namespace pin
         wind_direction=     A4,
         wind_speed=         2
         ;
-    int
-        rs=                 12,
-        enable=             11,
-        lcd_1=              3,
-        lcd_2=              4,
-        lcd_3=              5,
-        lcd_4=              6
-        ;
 }
-
-namespace dpy
-{
-    int columns=            16,
-        rows=               2
-        ;
-}
-
-    /////////////////
-    // LCD Display //
-    /////////////////
-
-/*
-#include <LiquidCrystal.h>
-
-LiquidCrystal lcd(pin::rs,pin::enable,
-                  pin::lcd_1,pin::lcd_2,pin::lcd_3,pin::lcd_4
-                 );
-
-void InitLCD(void)
-{
-    lcd.begin(dpy::columns,dpy::rows);
-    lcd.noCursor();
-    lcd.print("LCD Initialized");
-}
-*/
 
     ////////////////////
     // Wind Direction //
