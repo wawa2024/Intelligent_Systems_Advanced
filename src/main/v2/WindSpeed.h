@@ -27,7 +27,7 @@ namespace WindSpeed
 
     void Interrupt(void)
     {
-        static int i{0};
+        static volatile int i{0};
 
         t_begin = t_end;
         t_end = millis();
@@ -37,18 +37,18 @@ namespace WindSpeed
         t_array[i++] = t_end - t_begin;
     }
 
-    double Millis2Time(unsigned long int t)
+    double Millis2Freq(unsigned long int t)
     {
         return 1000 / (double)t ;
     }
 
-    double Average (void)
+    double CalculateAverageSpeed(void)
     {
         double tmp = 0;
 
         for(int i=0 ; i < t_size ; i++)
         {
-           tmp += Millis2Time(t_array[i]) * 0.699 ;
+           tmp += Millis2Freq(t_array[i]) * 0.699 ;
            tmp -= tmp > 0.24 ? 0.24 : 0 ;
         }
         
@@ -63,7 +63,7 @@ namespace WindSpeed
 
     void Print(void)
     {
-        double wind_speed = Average();
+        double wind_speed = CalculateAverageSpeed();
         Reset(); // This should be removed later
 
         Serial.print("Wind Speed: ");
