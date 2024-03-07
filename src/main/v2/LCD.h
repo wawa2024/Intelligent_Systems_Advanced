@@ -20,7 +20,7 @@ struct Display
             enable=     A2
             ;
         const int 
-            lcd[4]=     { A3 , A5 , A6, A7 }
+            lcd[4]=     { A3 , A5 , 4, 5 }
             ;
     } pin ;
 

@@ -22,7 +22,6 @@ void Draw(void)
     display.lcd -> clear();
     display.lcd -> print("WindDirection: ");
     display.lcd -> print(WindDirection::Value());
-
 }
 
 struct Info
