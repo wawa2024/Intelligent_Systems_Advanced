@@ -5,14 +5,9 @@
  * I2C Serial Data Line (SDA) pin: A4
  * I2C Serial Clock Line (SLC) pin: A5
  ******************************************************************************/
-
-    /////////////////
-    // I2C Handler //
-    /////////////////
-
 #include <Wire.h>
 
-struct I2C
+namespace I2C
 {
     struct {
         unsigned char 
@@ -27,4 +22,4 @@ struct I2C
         Wire.begin();
     }
 
-} com ;
+}

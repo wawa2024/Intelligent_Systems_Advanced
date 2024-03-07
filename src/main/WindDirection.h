@@ -1,16 +1,12 @@
 /******************************************************************************
  * File: ./WindDirection.h
  ******************************************************************************/
-    ////////////////////
-    // Wind Direction //
-    ////////////////////
-    
 namespace WindDirection 
 {
     struct
     {
         const int
-            input=  A4
+            input=  A7
             ;
     } pin ;
 
@@ -44,7 +40,7 @@ namespace WindDirection
     {
         Serial.print("Wind Direction: ");
         Serial.print(Value());
-        Serial.println(" degrees");
+        Serial.println(" deg");
     }
 
     void Init(void)

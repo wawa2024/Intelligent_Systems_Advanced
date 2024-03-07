@@ -1,10 +1,6 @@
 /******************************************************************************
  * File: ./WindSpeed.h
  ******************************************************************************/
-    ////////////////
-    // Wind Speed //
-    ////////////////
-
 namespace WindSpeed
 {
     struct 
@@ -42,35 +38,21 @@ namespace WindSpeed
         return 1000 / (double)t ;
     }
 
-    double CalculateAverageSpeed(void)
+    double Value(void)
     {
-        double tmp = 0;
-
+        double sum = 0;
         for(int i=0 ; i < t_size ; i++)
         {
-           tmp += Millis2Freq(t_array[i]) * 0.699 ;
-           tmp -= tmp > 0 ? 0.24 : 0 ;
+           sum += Millis2Freq(t_array[i]) * 0.699 ;
+           sum -= sum > 0 ? 0.24 : 0 ;
         }
-        
-        return tmp / t_size;
-    }
-
-    void Reset(void) // This should be removed later
-    {
-        for(int i=0 ; i < t_size ; i++)
-            t_array[i]=0;
-    }
-
-    inline double Value(void)
-    {
-        return CalculateAverageSpeed();
+        double average = sum / t_size;
+        return average;
     }
 
     void Print(void)
     {
-        double wind_speed = CalculateAverageSpeed();
-        Reset(); // This should be removed later
-
+        double wind_speed = Value();
         Serial.print("Wind Speed: ");
         Serial.print(wind_speed);
         Serial.println(" m/s");
