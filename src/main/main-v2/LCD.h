@@ -47,10 +47,11 @@ struct Display
                     pin.lcd[3]
                     );
         lcd = &dpy;
-
-        lcd -> begin(env.columns,env.rows,charsize);
+        
+        dpy . begin(env.columns,env.rows,charsize);
         lcd -> noCursor();
-        lcd -> print("LCD Initialized");
+        dpy . clear();
+        dpy . print("LCD Initialized");
     }
 
     void print(char* s)
