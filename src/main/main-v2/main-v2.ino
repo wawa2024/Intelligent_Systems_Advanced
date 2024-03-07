@@ -43,6 +43,7 @@ struct Info
 
 void setup()
 {
+    display.Init();
     Info observer; 
     WindSpeed::Init();
     WindDirection::Init();
@@ -50,7 +51,5 @@ void setup()
 
 void loop()
 {
-    PrintStats();
-    Draw();
-	delay(refresh_rate);
+    display.alphabet();
 }

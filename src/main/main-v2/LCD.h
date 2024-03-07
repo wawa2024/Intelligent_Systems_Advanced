@@ -25,19 +25,19 @@ struct Display
     } pin ;
 
     LiquidCrystal* lcd;
-    char charsize= 4;
 
     struct 
     {
         const int
-            columns=    16,
-            rows=       4
+            columns=    20,
+            rows=       4,
+            charsize=   4
             ;
     } env ;
 
-    LCD()
+    void Init(void)
     {
-        static const LiquidCrystal dpy(
+        static LiquidCrystal dpy(
                     pin.rs,
                     pin.rw,
                     pin.enable,
@@ -48,10 +48,10 @@ struct Display
                     );
         lcd = &dpy;
         
-        dpy . begin(env.columns,env.rows,charsize);
+        dpy . begin(env.columns,env.rows,env.charsize);
         lcd -> noCursor();
         dpy . clear();
-        dpy . print("LCD Initialized");
+        //dpy . print("LCD Initialized");
     }
 
     void print(char* s)
@@ -61,17 +61,34 @@ struct Display
 
     void alphabet()
     {
-        char col=0, row=0;
-        char c = 'A';
-        for(int i=0 ; !( c > 'Z' ) ; c++ , i++ )
+        static char col=0, row=0;
+        static char c = 'A';
+
+        lcd -> write(c++);
+        for( ; col < env.columns ; )
         {
-            if( i == 16 )
-            {
-                lcd -> setCursor(0,++row);
-                i=0;
-            }
-            lcd -> write(c);
+            delay(1000);
+            c = c > 'Z' ? 'A' : c;
+            //lcd -> setCursor(col,row);
+            //lcd -> write(' ');
+            lcd -> clear();
+            lcd -> setCursor(++col,row);
+            lcd -> write(c++);
         }
+        row++;
+        lcd -> write(c++);
+        for( ; ! ( col < 0 ) ; )
+        {
+            delay(1000);
+            c = c > 'Z' ? 'A' : c;
+            
+            //lcd -> setCursor(col,row);
+            //lcd -> write(' ');
+            lcd -> clear();
+            lcd -> setCursor(--col,row);
+            lcd -> write(c++);
+        }
+        row--; col++;
     }
 
     void clear()
