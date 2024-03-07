@@ -20,24 +20,24 @@ struct Display
             enable=     A2
             ;
         const int 
-            lcd[4]=     { A3 , A5 , A6, A7 }
+            lcd[4]=     { A3 , A5 , 4, 5 }
             ;
     } pin ;
 
     LiquidCrystal* lcd;
-    char charsize= 4;
 
     struct 
     {
         const int
-            columns=    16,
-            rows=       4
+            columns=    20,
+            rows=       4,
+            charsize=   4
             ;
     } env ;
 
-    LCD()
+    void Init(void)
     {
-        static const LiquidCrystal dpy(
+        static LiquidCrystal dpy(
                     pin.rs,
                     pin.rw,
                     pin.enable,
@@ -47,10 +47,11 @@ struct Display
                     pin.lcd[3]
                     );
         lcd = &dpy;
-
-        lcd -> begin(env.columns,env.rows,charsize);
+        
+        dpy . begin(env.columns,env.rows,env.charsize);
         lcd -> noCursor();
-        lcd -> print("LCD Initialized");
+        dpy . clear();
+        //dpy . print("LCD Initialized");
     }
 
     void print(char* s)
@@ -60,17 +61,34 @@ struct Display
 
     void alphabet()
     {
-        char col=0, row=0;
-        char c = 'A';
-        for(int i=0 ; !( c > 'Z' ) ; c++ , i++ )
+        static char col=0, row=0;
+        static char c = 'A';
+
+        lcd -> write(c++);
+        for( ; col < env.columns ; )
         {
-            if( i == 16 )
-            {
-                lcd -> setCursor(0,++row);
-                i=0;
-            }
-            lcd -> write(c);
+            delay(1000);
+            c = c > 'Z' ? 'A' : c;
+            //lcd -> setCursor(col,row);
+            //lcd -> write(' ');
+            lcd -> clear();
+            lcd -> setCursor(++col,row);
+            lcd -> write(c++);
         }
+        row++;
+        lcd -> write(c++);
+        for( ; ! ( col < 0 ) ; )
+        {
+            delay(1000);
+            c = c > 'Z' ? 'A' : c;
+            
+            //lcd -> setCursor(col,row);
+            //lcd -> write(' ');
+            lcd -> clear();
+            lcd -> setCursor(--col,row);
+            lcd -> write(c++);
+        }
+        row--; col++;
     }
 
     void clear()
