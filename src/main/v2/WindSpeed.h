@@ -49,7 +49,7 @@ namespace WindSpeed
         for(int i=0 ; i < t_size ; i++)
         {
            tmp += Millis2Freq(t_array[i]) * 0.699 ;
-           tmp -= tmp > 0.24 ? 0.24 : 0 ;
+           tmp -= tmp > 0 ? 0.24 : 0 ;
         }
         
         return tmp / t_size;
@@ -59,6 +59,11 @@ namespace WindSpeed
     {
         for(int i=0 ; i < t_size ; i++)
             t_array[i]=0;
+    }
+
+    inline double Value(void)
+    {
+        return CalculateAverageSpeed();
     }
 
     void Print(void)

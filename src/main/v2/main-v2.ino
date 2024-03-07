@@ -17,6 +17,14 @@ void PrintStats(void)
     WindSpeed::Print();
 }
 
+void Draw(void)
+{
+    display.lcd -> clear();
+    display.lcd -> print("WindDirection: ");
+    display.lcd -> print(WindDirection::Value());
+
+}
+
 struct Info
 {
     int GetRam(void)
@@ -44,5 +52,6 @@ void setup()
 void loop()
 {
     PrintStats();
+    Draw();
 	delay(refresh_rate);
 }
