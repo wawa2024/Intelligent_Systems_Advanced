@@ -17,9 +17,8 @@ namespace I2C
 
     unsigned char buf[32] = {};
 
-    I2C()
+    void Init(void)
     {
         Wire.begin();
     }
-
 }

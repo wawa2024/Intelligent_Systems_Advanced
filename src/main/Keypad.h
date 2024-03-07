@@ -1,7 +1,7 @@
 /******************************************************************************
  * File: ./Keypad.h
  ******************************************************************************/
-struct Keypad
+namespace Keypad
 {
     struct {
         int 
@@ -10,39 +10,31 @@ struct Keypad
             ;
     } pin ;
 
+    struct {
+        const int 
+            bus_size = 4,
+            keycodes = 4 * 4
+            ;
+    } env ;
+
     unsigned char keypad[16] = {};
 
-    const int 
-        bus_size = 4,
-        keycodes = 4 * 4
-        ;
-
-    Keypad()
+    void Scan(void)
     {
-        for(int i=0; i < bus_size ; i++)
-        {
-            pinMode(pin.input[i] , INPUT);
-            pinMode(pin.output[i] , OUTPUT);
-        }
-    }
-
-    void scan(void)
-    {
-        for(int i=0 ; i < bus_size; i++)
+        for(int i=0 ; i < env.bus_size; i++)
         {
             digitalWrite( pin.input[i] , HIGH );
-            for(int j=0 ; j < bus_size ; j++)
-                keypad[ ( i * bus_size ) + j ] = ( i + 1 ) * digitalRead(pin.output[j]);
+            for(int j=0 ; j < env.bus_size ; j++)
+                keypad[ ( i * env.bus_size ) + j ] = ( i + 1 ) * digitalRead(pin.output[j]);
             digitalWrite( pin.input[i] , LOW );
         }
     }
 
-    void exec(void)
+    // The loop should be 'exec -> main -> scan -> repeat'
+    void Exec(void)
     {
-        scan(); // The loop should be 'exec -> main -> scan -> repeat'
-                // Remove this later.
 
-        for(int i=0 ; i < keycodes ; i++)
+        for(int i=0 ; i < env.keycodes ; i++)
         {
             unsigned char keycode = keypad[i];
 
@@ -64,4 +56,13 @@ struct Keypad
         }
     }
 
-} keypad ;
+    void Init(void)
+    {
+        for(int i=0; i < env.bus_size ; i++)
+        {
+            pinMode(pin.input[i] , INPUT);
+            pinMode(pin.output[i] , OUTPUT);
+        }
+    }
+
+}
