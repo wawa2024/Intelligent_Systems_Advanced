@@ -96,7 +96,6 @@ void WindSpeed_average(void)
     {
         tmp = tmp + var::t_array[i] * 0.699 ;    
         tmp -= tmp > 0 ? 0.24 : 0 ;
-        Serial.println(tmp);
     }
     var::wind_speed_freq = tmp / var::t_size;
 }
