@@ -54,26 +54,30 @@ namespace LCD
     void SetCursor(int col,int row){ lcd -> setCursor(col,row); }
     void Write(unsigned char c){ lcd -> write(c); }
 
+    namespace Sily
+    {
+        void P(bool* p){ if(p) *p=true; }
+        void G(bool& b, char& val, const int& k, bool* p)
+        {
+            if(b) if( val == k ) b = false , val--, P(p); else val++;
+            else  if( val  < 0 ) b = true  , val++, P(p); else val--;
+        }
+    }
+
     namespace Draw 
     {
         void Alphabet(void)
         {
-            char col=0, row=0;
-            char c = 'A';
-            bool flag = true;
+            char col=0, row=0, c = 'A';
+            bool x = true, y = true, z = false;
             do {
-                Clear(); SetCursor(col,row); Write(c);
-                if(flag)
-                    col++;
-                else
-                    col--;
-                if(col == env.cols)
-                    col--, row++, flag = false;
-                else if(col < 0)
-                    col++, row--, flag = true;
-                delay(250);
+                Clear(); SetCursor(col,row); Write(c); delay(250);
+                c = ++c > 'Z' ? 'A' : c;
+                Sily::G(x,col,env.cols,&z);
+                if(z) z = false, Sily::G(y,row,env.rows,NULL);
             } while ( col != 0 && row != 0 );
         }
+
         void Stats(void)
         {
             Clear();

@@ -1,59 +1,74 @@
 /******************************************************************************
  * File: ./Keypad.h
  ******************************************************************************/
+
 namespace Keypad
 {
     struct {
         int 
-            input[4] = { 0 , 0 , 0 , 0 },
-            output[4] = { 0 , 0 , 0 , 0 }
+            input[0]  = {},
+            output[0] = {}
             ;
     } pin ;
 
     struct {
         const int 
             bus_size = 4,
-            keycodes = 4 * 4
+            keycodes = 4 * 4,
+            ref_voltage = 5
+            ;
+        const float 
+            field[16] = 
+                      { 0.3125 , 0.6250 , 0.9375 , 1.25 , 
+                        1.5625 , 1.8750 , 2.1875 , 2.50 ,
+                        2.8125 , 3.1250 , 3.4375 , 3.75 ,
+                        4.0625 , 4.3750 , 4.6875 , 5.00 };
+        const float
+            offset = ( 5/16 ) / 2
             ;
     } env ;
 
-    unsigned char keypad[16] = {};
+    int keycode = 0;
+
+    float Voltage(unsigned int i)
+    {
+        return (float)i * ( (float)env.ref_voltage / (float)1023 );
+    }
 
     void Scan(void)
     {
-        for(int i=0 ; i < env.bus_size; i++)
+        float val = Voltage(analogRead(pin.input[0]));
+        for(int i=0 ; i < env.keycodes ; i++)
         {
-            digitalWrite( pin.input[i] , HIGH );
-            for(int j=0 ; j < env.bus_size ; j++)
-                keypad[ ( i * env.bus_size ) + j ] = ( i + 1 ) * digitalRead(pin.output[j]);
-            digitalWrite( pin.input[i] , LOW );
+            float f = env.field[i];
+            if( ( f - env.offset ) <= val &&
+                ( f + env.offset ) >= val )
+            {
+                keycode = i + 1; 
+            }
         }
     }
 
-    // The loop should be 'exec -> main -> scan -> repeat'
+    void Task(void)
+    {
+        switch(keycode) 
+        {
+            case 1 : case 2 : case 3 : case 4 :
+            case 5 : case 6 : case 7 : case 8 :
+            case 9 : case 10: case 11: case 12:
+            case 13: case 14: case 15: case 16:
+                Serial.print("Keycode: ");
+                Serial.print(keycode);
+                Serial.println("");
+                break;
+            default:
+                break;
+        }
+    }
+
     void Exec(void)
     {
-
-        for(int i=0 ; i < env.keycodes ; i++)
-        {
-            unsigned char keycode = keypad[i];
-
-            // A global jmptbl could replace this.
-            // Would allow multi hierarchy management.
-            // A common "Get" object API should be used to set
-            // internal flags.
-            switch(keycode) 
-            {
-                default:
-                    Serial.print("{ Keycode: ");
-                    Serial.print(i);
-                    Serial.print(", State: ");
-                    Serial.print(keycode);
-                    Serial.print(" }");
-                    break;
-            }
-            Serial.println("");
-        }
+        Scan(); Task();
     }
 
     void Init(void)
@@ -64,5 +79,4 @@ namespace Keypad
             pinMode(pin.output[i] , OUTPUT);
         }
     }
-
 }
