@@ -14,6 +14,7 @@ namespace Keypad
     struct {
         const int 
             keycodes = 4 * 4,
+            bus_size = 1,
             ref_voltage = 5
             ;
         const float 
