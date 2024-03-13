@@ -13,7 +13,6 @@ namespace Keypad
 
     struct {
         const int 
-            bus_size = 4,
             keycodes = 4 * 4,
             ref_voltage = 5
             ;
@@ -30,14 +29,15 @@ namespace Keypad
 
     int keycode = 0;
 
-    float Voltage(unsigned int i)
+    float Voltage()
     {
-        return (float)i * ( (float)env.ref_voltage / (float)1023 );
+        return    (float)analogRead(pin.input[0]) * 
+                ( (float)env.ref_voltage / (float)1023 );
     }
 
     void Scan(void)
     {
-        float val = Voltage(analogRead(pin.input[0]));
+        float val = Voltage();
         for(int i=0 ; i < env.keycodes ; i++)
         {
             float f = env.field[i];

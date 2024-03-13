@@ -21,7 +21,7 @@ namespace LCD
 
     struct
     {
-        const int
+        const unsigned char 
             cols=       20,
             rows=       4
             ;
@@ -54,30 +54,25 @@ namespace LCD
     void SetCursor(int col,int row){ lcd -> setCursor(col,row); }
     void Write(unsigned char c){ lcd -> write(c); }
 
-    namespace Sily
+    namespace Sily 
     {
-        void P(bool* p){ if(p) *p=true; }
-        void G(bool& b, char& val, const int& k, bool* p)
-        {
-            if(b) if( val == k ) b = false , val--, P(p); else val++;
-            else  if( val  < 0 ) b = true  , val++, P(p); else val--;
-        }
+        char col=0, row=0;
+        bool x=true, y=true;
+        char S(void){static char c='A'-1;return c=++c>'Z'?'A':c;}
+        char I(bool& b,char& val){return val=b?val++:val--;}
+        void G(void){Clear();SetCursor(col,row);Write(S());delay(250);}
+        void M(bool& b,char& val,unsigned char max,unsigned char i){
+            static bool f=false;if(i){
+                I(b,val);
+                if(val==max)b=false,f=true;else if(val<0)b=true,f=true;
+                if(f){f=false;I(b,val);M(y,row,env.rows,i-1);}
+            }else I(x,col);}
+        void A(void){do{G();M(x,col,env.cols,2);}while(col!=0&&row!=0);}
     }
 
     namespace Draw 
     {
-        void Alphabet(void)
-        {
-            char col=0, row=0, c = 'A';
-            bool x = true, y = true, z = false;
-            do {
-                Clear(); SetCursor(col,row); Write(c); delay(250);
-                c = ++c > 'Z' ? 'A' : c;
-                Sily::G(x,col,env.cols,&z);
-                if(z) z = false, Sily::G(y,row,env.rows,NULL);
-            } while ( col != 0 && row != 0 );
-        }
-
+        void Alphabet(void){Sily::A();}
         void Stats(void)
         {
             Clear();
