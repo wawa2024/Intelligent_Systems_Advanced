@@ -6,7 +6,7 @@ namespace Keypad
 {
     struct {
         int 
-            input[0]  = {},
+            input[1]  = { A6 },
             output[0] = {}
             ;
     } pin ;
@@ -38,10 +38,10 @@ namespace Keypad
 
     void Scan(void)
     {
-        float val = Voltage();
+        float val = Voltage(), f;
         for(int i=0 ; i < env.keycodes ; i++)
         {
-            float f = env.field[i];
+            f = env.field[i];
             if( ( f - env.offset ) <= val &&
                 ( f + env.offset ) >= val )
             {

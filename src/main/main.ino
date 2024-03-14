@@ -11,13 +11,14 @@ void setup()
 {
     COM::Init();
     LCD::Init();
+    Keypad::Init();
     WindSpeed::Init();
     WindDirection::Init();
 }
 
 void loop()
 {
-   COM::Print::Stats(); 
-   LCD::Draw::Stats();
-   delay(250);
+    LCD::Draw::Alphabet();
+    //Keypad::Exec();
+    //delay(250);
 }

@@ -66,7 +66,7 @@ namespace LCD
                 I(b,val);
                 if(val==max)b=false,f=true;else if(val<0)b=true,f=true;
                 if(f){f=false;I(b,val);M(y,row,env.rows,i-1);}
-            }else I(x,col);}
+            }else{I(y,row);}}
         void A(void){do{G();M(x,col,env.cols,2);}while(!(col==0&&row==0));}
     }
 
@@ -82,7 +82,9 @@ namespace LCD
             static bool state = true;
            
            if( not state && not ( wind_direction == direction and speed == wind_speed ) )
-                state = false;
+            {
+                state = true;
+            }
 
             if(state)
             {
