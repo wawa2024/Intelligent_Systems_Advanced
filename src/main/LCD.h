@@ -67,7 +67,7 @@ namespace LCD
                 if(val==max)b=false,f=true;else if(val<0)b=true,f=true;
                 if(f){f=false;I(b,val);M(y,row,env.rows,i-1);}
             }else{I(y,row);}}
-        void A(void){do{G();M(x,col,env.cols,2);}while(!(col==0&&row==0));}
+        void A(void){do{G();M(x,col,env.cols,2);}while(!(col==0&&row==0));Clear();}
     }
 
     namespace Draw 
@@ -79,12 +79,12 @@ namespace LCD
             int wind_direction = WindDirection::Value();
             static int direction = wind_direction;
             static double speed = wind_speed;
+            
             static bool state = true;
-           
-           if( not state && not ( wind_direction == direction and speed == wind_speed ) )
-            {
-                state = true;
-            }
+          
+            // Experimental code
+            //if( not state && not ( wind_direction == direction and speed == wind_speed ) )
+            //   state = true, direction = wind_direction, speed = wind_speed;
 
             if(state)
             {
@@ -93,8 +93,8 @@ namespace LCD
                 Print("  Value: "); Print(wind_direction); Print(" deg"); SetCursor(0,2);
                 Print("WindSpeed:"); SetCursor(0,3);
                 Print("  Value: "); Print(wind_speed); Print(" m/s");
-                state = false;
             }
+            //state = false;
         }
     }
 }

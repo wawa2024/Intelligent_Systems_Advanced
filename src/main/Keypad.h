@@ -1,9 +1,12 @@
 /******************************************************************************
  * File: ./Keypad.h
+ * Dependencies: avr/interrupt.h
  ******************************************************************************/
+//#include <avr/interrupt.h> //pending
 
 namespace Keypad
 {
+    constexpr float V(float x){ return ( ( 5.0 / 16.0 ) * x ); }
     struct {
         int 
             input[1]  = { A6 },
@@ -18,53 +21,98 @@ namespace Keypad
             ref_voltage = 5
             ;
         const float 
-            field[16] = 
-                      { 0.3125 , 0.6250 , 0.9375 , 1.25 , 
-                        1.5625 , 1.8750 , 2.1875 , 2.50 ,
-                        2.8125 , 3.1250 , 3.4375 , 3.75 ,
-                        4.0625 , 4.3750 , 4.6875 , 5.00 };
+            field[16] = {
+                      V(1)  ,   V(2)    ,   V(3)    ,   V(4),
+                      V(5)  ,   V(6)    ,   V(7)    ,   V(8),
+                      V(9)  ,   V(10)   ,   V(11)   ,   V(12),
+                      V(13) ,   V(14)   ,   V(15)   ,   V(16)
+            };
         const float
-            offset = ( 5/16 ) / 2
+            offset = V(1) / 2
             ;
     } env ;
 
     int keycode = 0;
+    struct Key { 
+        const char* name; 
+        void (*handler)(void); 
+    };
+    Key key[16] = {
+        { "*" , NULL },
+        { "7" , NULL },
+        { "4" , NULL },
+        { "1" , NULL },
+        { "0" , NULL },
+        { "8" , NULL },
+        { "5" , NULL },
+        { "2" , NULL },
+        { "#" , NULL },
+        { "9" , NULL },
+        { "6" , NULL },
+        { "3" , NULL },
+        { "D" , NULL },
+        { "C" , NULL },
+        { "B" , NULL },
+        { "A" , NULL }
+    };
 
-    float Voltage()
+    inline float Voltage()
     {
-        return    (float)analogRead(pin.input[0]) * 
-                ( (float)env.ref_voltage / (float)1023 );
+        float input = analogRead(pin.input[0]);
+        float voltage = input * ( (float)env.ref_voltage / (float)1023 );
+
+        #define DEBUG
+        #ifdef DEBUG
+        Serial.print("Pin: A6 { Voltage: ");
+        Serial.print(voltage);
+        Serial.println(" }");
+        #endif
+
+        return voltage;
     }
 
     void Scan(void)
     {
-        float val = Voltage(), f;
+        float voltage = Voltage();
+        static bool state = true;
+       
+        // Maybe add a delayed repeat rate functionality
+        // static unsigned long t_press = 0;
+        // unsigned long t_time = millis();
+        //
+        // A timed Interrupt handler could be used to
+        // scan for keypress changes, which when read
+        // trigger a flag which is used within all LCD
+        // program bodies to determine if they should halt their
+        // execution. The interrupt handler would only change
+        // 2 values, keycode (through Scan()) and a flag value
+
         for(int i=0 ; i < env.keycodes ; i++)
         {
-            f = env.field[i];
-            if( ( f - env.offset ) <= val &&
-                ( f + env.offset ) >= val )
-            {
+            float f = env.field[i];
+
+            float low = f - env.offset, high = f + env.offset;
+            if( ( low < voltage ) && ( high > voltage ) )
                 keycode = i + 1; 
-            }
         }
     }
 
     void Task(void)
     {
-        switch(keycode) 
+        if(keycode)
         {
-            case 1 : case 2 : case 3 : case 4 :
-            case 5 : case 6 : case 7 : case 8 :
-            case 9 : case 10: case 11: case 12:
-            case 13: case 14: case 15: case 16:
-                Serial.print("Keycode: ");
-                Serial.print(keycode);
-                Serial.println("");
-                break;
-            default:
-                break;
+            keycode-=1;
+            Key& k = key[keycode];
+            #ifdef DEBUG
+            Serial.print("Keycode: ");
+            Serial.print(keycode);
+            Serial.print(",Button: ");
+            Serial.print(k.name);
+            Serial.println("");
+            #endif
+            if(k.handler) k.handler();
         }
+        keycode=0;
     }
 
     void Exec(void)
@@ -72,6 +120,7 @@ namespace Keypad
         Scan(); Task();
     }
 
+    void AttatchHandler(int i,void (*p)(void)){key[i-1].handler=p;}
     void Init(void)
     {
         for(int i=0; i < env.bus_size ; i++)
@@ -79,5 +128,11 @@ namespace Keypad
             pinMode(pin.input[i] , INPUT);
             pinMode(pin.output[i] , OUTPUT);
         }
+        #ifdef DEBUG
+        Debug::dump_var(env.offset,"Offset");
+        Debug::dump_array(env.field,16,"Field");
+        #endif
+        AttatchHandler(1,LCD::Draw::Stats);
+        AttatchHandler(2,LCD::Draw::Alphabet);
     }
 }

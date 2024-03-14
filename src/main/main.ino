@@ -1,10 +1,11 @@
 /******************************************************************************
  * File: ./main.ino
  ******************************************************************************/
+#include "Debug.h"
 #include "WindDirection.h"
 #include "WindSpeed.h"
-#include "Keypad.h"
 #include "LCD.h"
+#include "Keypad.h"
 #include "COM.h"
 
 void setup()
@@ -18,7 +19,5 @@ void setup()
 
 void loop()
 {
-    LCD::Draw::Alphabet();
-    //Keypad::Exec();
-    //delay(250);
+    Keypad::Exec();
 }
