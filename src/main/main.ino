@@ -18,5 +18,6 @@ void setup()
 void loop()
 {
    COM::Print::Stats(); 
-   LCD::Draw::Alphabet();
+   LCD::Draw::Stats();
+   delay(250);
 }
