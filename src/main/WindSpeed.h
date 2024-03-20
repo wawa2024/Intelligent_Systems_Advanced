@@ -1,5 +1,6 @@
 /******************************************************************************
  * File: ./WindSpeed.h
+ * Dependency: ./Utils.h
  ******************************************************************************/
 namespace WindSpeed
 {
@@ -33,17 +34,12 @@ namespace WindSpeed
         t_array[i++] = t_end - t_begin;
     }
 
-    double Millis2Freq(unsigned long int t)
-    {
-        return 1000 / (double)t ;
-    }
-
     double Value(void)
     {
         double sum = 0;
         for(int i=0 ; i < t_size ; i++)
         {
-           sum += Millis2Freq(t_array[i]) * 0.699 ;
+           sum += millis2hz(t_array[i]) * 0.699 ;
            sum -= sum > 0 ? 0.24 : 0 ;
         }
         double average = sum / t_size;

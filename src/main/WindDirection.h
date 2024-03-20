@@ -1,5 +1,6 @@
 /******************************************************************************
  * File: ./WindDirection.h
+ * Dependency: ./Utils.h
  ******************************************************************************/
 namespace WindDirection 
 {
@@ -9,10 +10,6 @@ namespace WindDirection
             input=  A7
             ;
     } pin ;
-
-    const int 
-        ref_voltage=    5
-        ;
 
     double mapd(double x, double in_min, double in_max, double out_min, double out_max)
     {     

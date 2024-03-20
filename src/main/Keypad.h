@@ -7,22 +7,17 @@
 
 namespace Keypad
 {
-    constexpr float V(float x){ return ( ( 5.0 / 16.0 ) * x ); }
-    const struct {
-        constexpr static int 
+    constexpr int num_keys = 4 * 4, bus_size = 1;
+    constexpr float V(float x){return(((float)ref_voltage/(float)num_keys)*x);}
+    constexpr struct {
+        int 
             input[1]  = { A6 },
             output[0] = {}
             ;
     } pin ;
-
     const struct {
-        constexpr static int 
-            keycodes = 4 * 4,
-            bus_size = 1,
-            ref_voltage = 5
-            ;
         const float 
-            field[keycodes] = {
+            field[num_keys] = {
                       V(1)  ,   V(2)    ,   V(3)    ,   V(4),
                       V(5)  ,   V(6)    ,   V(7)    ,   V(8),
                       V(9)  ,   V(10)   ,   V(11)   ,   V(12),
@@ -30,12 +25,8 @@ namespace Keypad
             };
         const float offset = V(1) / 2;
     } env ;
-
     volatile int keycode = 0;
-    struct Key { 
-        const char* name; 
-        void (*handler)(void); 
-    };
+    struct Key { const char* name; void (*handler)(void); };
     Key key[16] = {
         { "*" , NULL },
         { "7" , NULL },
@@ -58,7 +49,7 @@ namespace Keypad
     volatile float Voltage()
     {
         float input = analogRead(pin.input[0]);
-        volatile float voltage = input * ( (float)env.ref_voltage / (float)1023 );
+        volatile float voltage = input * ( (float)ref_voltage / (float)1023 );
 
         #define DEBUG
         #ifdef DEBUG
@@ -70,17 +61,30 @@ namespace Keypad
         return voltage;
     }
 
-
     #include <setjmp.h>
-    jmp_buf stack;
-    int state;
+    namespace Kernel 
+    {
+        // A future potential job scheduler
+        constexpr int pids=2;
+        struct Thread
+        {jmp_buf stack;int state,pid{0};Thread* p;Thread(Thread* p):p(p){}};
+        volatile Thread ring[pids]{ring,ring+1};
+        volatile static Thread* ps=ring;
+        void Scheduler(void){
+            ps->state=setjmp(ps->stack);
+            if(not ps->state){ps=ps->p;longjmp(ps->stack,true);}
+        }
+        inline int Fork(unsigned int pid){return setjmp(ring[pid].stack);}
+    }
 
+    static jmp_buf stack;
+    static volatile int state;
     void ScanKeys(void)
     {
         volatile float voltage = Voltage();
         if( env.offset < voltage )
         {
-            for(int i=0 ; i < env.keycodes ; i++)
+            for(int i=0 ; i < num_keys ; i++)
             {
                 const float& f = env.field[i];
                 volatile float low = f - env.offset, high = f + env.offset;
@@ -109,50 +113,49 @@ namespace Keypad
         keycode=0;
     }
 
-    void Exec(void)
+    // Currently this logic allows only single threaded processing
+    void Exec(void){state=setjmp(stack);interrupts();while(true)Task();}
+
+    namespace Attach
     {
-        state=setjmp(stack); interrupts() ; Task();
-    }
-
-    void AttatchHandler(int i,void (*p)(void)){key[i-1].handler=p;}
-    void AttatchKeys(void)
-    {
-        AttatchHandler(1,LCD::Draw::Stats);
-        AttatchHandler(2,LCD::Draw::Alphabet);
-    }
-
-
-    #define USE_TIMER_1 true
-    #include <TimerInterrupt.h>
-
-    void AttatchTimer(void)
-    {
-        const unsigned long refresh_rate_milliseconds = 200;
-        ITimer1.init();
-        if(ITimer1.attachInterruptInterval(refresh_rate_milliseconds,ScanKeys))
+        void Handler(int i,void (*p)(void)){key[i-1].handler=p;}
+        void Keys(void)
         {
-            Serial.print("Starting  ITimer1 OK, millis() = "); 
-            Serial.println(millis());
+            Handler(1,LCD::Draw::Stats);
+            Handler(2,LCD::Draw::Alphabet);
         }
-        else
-            Serial.println(F("Can't set ITimer1. Select another freq. or timer"));
 
+        #define USE_TIMER_1 true
+        #include <TimerInterrupt.h>
+
+        // This could in the future be replaced with comparator interrupt.
+        // The overhead caused by this polling might be an issue in the future
+        // for a concurrent job scheduler.
+        void Timer(void)
+        {
+            const unsigned long refresh_rate_milliseconds = hz2millis(20);
+            ITimer1.init();
+            if(ITimer1.attachInterruptInterval(refresh_rate_milliseconds,ScanKeys))
+            {
+                Serial.print("Starting  ITimer1 OK, millis() = "); 
+                Serial.println(millis());
+            }
+            else
+                Serial.println("Can't set ITimer1. Select another freq. or timer");
+
+        }
     }
 
     void Init(void)
     {
-        for(int i=0; i < env.bus_size ; i++)
-        {
-            pinMode(pin.input[i] , INPUT);
-            pinMode(pin.output[i] , OUTPUT);
-        }
+        pinMode(pin.input[0],INPUT);
 
         #ifdef DEBUG
         Debug::dump_var(env.offset,"Offset");
         Debug::dump_array(env.field,16,"Field");
         #endif
         
-        AttatchKeys();
-        AttatchTimer();
+        Attach::Keys();
+        Attach::Timer();
     }
 }

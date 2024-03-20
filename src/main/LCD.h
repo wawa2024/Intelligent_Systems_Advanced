@@ -19,9 +19,9 @@ namespace LCD
             ;
     } pin ;
 
-    struct
+    constexpr struct
     {
-        const unsigned char 
+        unsigned char 
             cols=       20,
             rows=       4
             ;
@@ -50,14 +50,17 @@ namespace LCD
     }
 
     template<typename T> void Print(T a){ lcd -> print(a); }
-    void Clear(){ lcd -> clear(); }
-    void SetCursor(int col,int row){ lcd -> setCursor(col,row); }
-    void Write(unsigned char c){ lcd -> write(c); }
+    void Clear(){lcd->clear();}
+    void SetCursor(int col,int row){lcd->setCursor(col,row);}
+    void Write(unsigned char c){lcd->write(c);}
+    void Exec(void (*k)(LiquidCrystal*,unsigned char,unsigned char))
+    {k(lcd,env.cols,env.rows);}
 
     namespace Sily 
     {
-        char col=0, row=0;
-        bool x=true, y=true;
+        constexpr unsigned char X = env.cols, Y = env.rows;
+        static char col=0, row=0;
+        static bool x=true, y=true;
         char S(void){static char c='A'-1;return c=++c>'Z'?'A':c;}
         char I(bool& b,char& val){if(b)val++;else val--;return val;}
         void G(void){Clear();SetCursor(col,row);Write(S());delay(150);}
@@ -65,27 +68,27 @@ namespace LCD
             static bool f=false;if(i){
                 I(b,val);
                 if(val==max)b=false,f=true;else if(val<0)b=true,f=true;
-                if(f){f=false;I(b,val);M(y,row,env.rows,i-1);}
+                if(f){f=false;I(b,val);M(y,row,Y,i-1);}
             }else{I(y,row);}}
-        void A(void){do{G();M(x,col,env.cols,2);}while(!(col==0&&row==0));Clear();}
-    }
+        void A(void){do{G();M(x,col,X,2);}while(not(col==0 and row==0));Clear();}
+    };
 
     namespace Draw 
     {
         void Alphabet(void){Sily::A();}
         void Stats(void)
         {
-            double wind_speed = WindSpeed::Value();
-            int wind_direction = WindDirection::Value();
-            static int direction = wind_direction;
-            static double speed = wind_speed;
-            
+            const int refresh_rate = hz2millis(20);
+            static double wind_speed;
+            static int wind_direction;
+            static int direction;
+            static double speed;
             static bool state = true;
-          
-            // Experimental code
-            //if( not state && not ( wind_direction == direction and speed == wind_speed ) )
-            //   state = true, direction = wind_direction, speed = wind_speed;
 
+            wind_speed = WindSpeed::Value();
+            wind_direction = WindDirection::Value();
+            if( not state && not ( wind_direction == direction and speed == wind_speed ) )
+                state = true, direction = wind_direction, speed = wind_speed;
             if(state)
             {
                 Clear();
@@ -94,7 +97,8 @@ namespace LCD
                 Print("WindSpeed:"); SetCursor(0,3);
                 Print("  Value: "); Print(wind_speed); Print(" m/s");
             }
-            //state = false;
+            state = false;
+            delay(refresh_rate);
         }
     }
 }
