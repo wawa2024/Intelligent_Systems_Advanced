@@ -93,6 +93,8 @@ namespace NET
 
     void Init(void)
     {
+        Ethernet.begin(local.mac);
+        /*
         Ethernet.begin(
                         local.mac,
                         local.ip,
@@ -100,6 +102,7 @@ namespace NET
                         local.gw,
                         local.subnet
                         );
+        */
         Serial.println("NET initialized"); 
         Serial.println(Status::Hardware());
         Serial.println(Status::Link());

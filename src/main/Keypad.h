@@ -23,7 +23,7 @@ namespace Keypad
                       2.94  ,  3.20  ,  3.47  ,  3.75,
                       3.99  ,  4.31  ,  5.00  ,  5.00
             };
-        const float offset = 0.25 / 2;
+        const float offset =0.08; 
     } env ;
     volatile int keycode = 0;
     struct Key { const char* name; void (*handler)(void); };
@@ -51,7 +51,6 @@ namespace Keypad
         float input = analogRead(pin.input[0]);
         volatile float voltage = input * ( (float)ref_voltage / (float)1023 );
 
-        #define DEBUG
         #ifdef DEBUG
         Serial.print("Pin: A6 { Voltage: ");
         Serial.print(voltage);
@@ -89,7 +88,12 @@ namespace Keypad
                 const float& f = env.field[i];
                 volatile float low = f - env.offset, high = f + env.offset;
                 if( ( low < voltage ) && ( voltage < high ) )
+                { 
+                    Serial.print("High: "); Serial.println(high);
+                    Serial.print("Low: "); Serial.println(low);
                     keycode = i + 1; 
+                    break; 
+                }
             }
             longjmp(stack,state);
         }
@@ -101,20 +105,20 @@ namespace Keypad
         {
             keycode-=1;
             Key& k = key[keycode];
-            #ifdef DEBUG
+            //#ifdef DEBUG
             Serial.print("Keycode: ");
             Serial.print(keycode);
             Serial.print(",Button: ");
             Serial.print(k.name);
             Serial.println("");
-            #endif
+            //#endif
             if(k.handler) k.handler();
         }
         keycode=0;
     }
 
     // Currently this logic allows only single threaded processing
-    void Exec(void){state=setjmp(stack);interrupts();while(true)Task();}
+    void Exec(void){state=setjmp(stack);interrupts();Task();}
 
     namespace Attach
     {

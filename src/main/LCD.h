@@ -84,21 +84,24 @@ namespace LCD
             static int direction;
             static double speed;
             static bool state = true;
-
-            wind_speed = WindSpeed::Value();
-            wind_direction = WindDirection::Value();
-            if( not state && not ( wind_direction == direction and speed == wind_speed ) )
-                state = true, direction = wind_direction, speed = wind_speed;
-            if(state)
+            
+            while(true)
             {
-                Clear();
-                Print("WindDirection:"); SetCursor(0,1);
-                Print("  Value: "); Print(wind_direction); Print(" deg"); SetCursor(0,2);
-                Print("WindSpeed:"); SetCursor(0,3);
-                Print("  Value: "); Print(wind_speed); Print(" m/s");
+                wind_speed = WindSpeed::Value();
+                wind_direction = WindDirection::Value();
+                if( not state and not ( wind_direction == direction and speed == wind_speed ) )
+                    state = true, direction = wind_direction, speed = wind_speed;
+                if(state)
+                {
+                    Clear();
+                    Print("WindDirection:"); SetCursor(0,1);
+                    Print("  Value: "); Print(wind_direction); Print(" deg"); SetCursor(0,2);
+                    Print("WindSpeed:"); SetCursor(0,3);
+                    Print("  Value: "); Print(wind_speed); Print(" m/s");
+                }
+                state = false;
+                delay(500);
             }
-            state = false;
-            delay(refresh_rate);
         }
     }
 }
