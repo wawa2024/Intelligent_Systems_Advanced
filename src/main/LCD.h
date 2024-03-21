@@ -7,7 +7,7 @@
 
 namespace LCD
 {
-    struct 
+    constexpr struct 
     {
         const int
             rs=         A0,
@@ -15,7 +15,7 @@ namespace LCD
             enable=     A2
             ;
         const int 
-            d[4]=     { A3 , A5 , 3 , 4 }
+            d[4]=     { A3 , A5 , 4 , 5 }
             ;
     } pin ;
 
@@ -50,11 +50,9 @@ namespace LCD
     }
 
     template<typename T> inline void Print(T a){ lcd -> print(a); }
-    inline void Clear(){lcd->clear();}
-    inline void SetCursor(int col,int row){lcd->setCursor(col,row);}
-    inline void Write(unsigned char c){lcd->write(c);}
-    inline void Exec(void (*k)(LiquidCrystal*,unsigned char,unsigned char))
-    {k(lcd,env.cols,env.rows);}
+    inline void Clear() { lcd -> clear(); }
+    inline void SetCursor(int col,int row){ lcd -> setCursor(col,row); }
+    inline void Write(unsigned char c){ lcd -> write(c); }
 
     namespace Sily 
     {
@@ -75,18 +73,18 @@ namespace LCD
 
     namespace Draw 
     {
-        inline void Alphabet(void){Sily::A();}
-        inline void Stats(void)
+        void Alphabet(void){Sily::A();}
+        void Stats(void)
         {
-            const int refresh_rate = hz2millis(20);
-            static double wind_speed;
-            static int wind_direction;
-            static int direction;
-            static double speed;
-            static bool state = true;
-            
-            while(true)
-            {
+            int&& refresh_rate = hz2millis(2);
+            double wind_speed, speed;
+            int wind_direction, direction;
+            bool state = true;
+         
+            // cli() and sei() ruin interrupt flags for Timer.h
+            // functions which are called through Task(); return to nothing,
+            // possible due to loop() breaking.
+            do {
                 wind_speed = WindSpeed::Value();
                 wind_direction = WindDirection::Value();
                 if( not state and not ( wind_direction == direction and speed == wind_speed ) )
@@ -100,8 +98,8 @@ namespace LCD
                     Print("  Value: "); Print(wind_speed); Print(" m/s");
                 }
                 state = false;
-                delay(500);
-            }
+                delay(refresh_rate);
+            } while(true);
         }
     }
 }

@@ -11,7 +11,7 @@ namespace WindSpeed
             ;
     } pin ;
 
-    const int
+    constexpr int
         t_size=     10
         ;
     volatile unsigned long
@@ -34,7 +34,7 @@ namespace WindSpeed
         t_array[i++] = t_end - t_begin;
     }
 
-    double Value(void)
+    inline double Value(void)
     {
         double sum = 0;
         for(int i=0 ; i < t_size ; i++)
@@ -42,10 +42,12 @@ namespace WindSpeed
            sum += millis2hz(t_array[i]) * 0.699 ;
            sum -= sum > 0 ? 0.24 : 0 ;
         }
-        double average = sum / t_size;
+        double&& average = sum / t_size;
         return average;
     }
 
+    #ifdef LEAN
+    #else
     inline void Print(void)
     {
         double&& wind_speed = Value();
@@ -53,6 +55,7 @@ namespace WindSpeed
         Serial.print(wind_speed);
         Serial.println(" m/s");
     }
+    #endif
 
     inline void Init(void)
     {

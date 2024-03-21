@@ -9,6 +9,7 @@
 #include "Keypad.h"
 #include "COM.h"
 #include "NET.h"
+#include "Protocol.h"
 
 void setup()
 {
@@ -18,6 +19,7 @@ void setup()
     WindSpeed::Init();
     WindDirection::Init();
     NET::Init();
+    MQTT::Init();
 }
 
 void loop()

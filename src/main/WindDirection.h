@@ -18,9 +18,7 @@ namespace WindDirection
 
     inline int Value(void)
     {
-        static const int 
-            Max_ADC_Ret = 1023
-            ;
+        constexpr int Max_ADC_Ret = 1023;
 
         double voltage = (double)analogRead(pin.input) * 
                          ( 
@@ -28,17 +26,18 @@ namespace WindDirection
                             (double)Max_ADC_Ret 
                          );
 
-        int wind_direction = mapd(voltage, 0 , 3.8 , 0 , 359 );
-
-        return wind_direction ;
+        return mapd(voltage, 0 , 3.8 , 0 , 359 );
     }
 
+    #ifdef LEAN
+    #else
     inline void Print(void)
     {
         Serial.print("Wind Direction: ");
         Serial.print(Value());
         Serial.println(" deg");
     }
+    #endif
 
     inline void Init(void)
     {
