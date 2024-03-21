@@ -11,12 +11,12 @@ namespace WindDirection
             ;
     } pin ;
 
-    double mapd(double x, double in_min, double in_max, double out_min, double out_max)
+    inline double mapd(double x, double in_min, double in_max, double out_min, double out_max)
     {     
         return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min; 
     }
 
-    int Value(void)
+    inline int Value(void)
     {
         static const int 
             Max_ADC_Ret = 1023
@@ -33,14 +33,14 @@ namespace WindDirection
         return wind_direction ;
     }
 
-    void Print(void)
+    inline void Print(void)
     {
         Serial.print("Wind Direction: ");
         Serial.print(Value());
         Serial.println(" deg");
     }
 
-    void Init(void)
+    inline void Init(void)
     {
         pinMode(pin.input,INPUT);
     }

@@ -46,15 +46,15 @@ namespace WindSpeed
         return average;
     }
 
-    void Print(void)
+    inline void Print(void)
     {
-        double wind_speed = Value();
+        double&& wind_speed = Value();
         Serial.print("Wind Speed: ");
         Serial.print(wind_speed);
         Serial.println(" m/s");
     }
 
-    void Init(void)
+    inline void Init(void)
     {
         pinMode(pin.input,INPUT);
         attachInterrupt(

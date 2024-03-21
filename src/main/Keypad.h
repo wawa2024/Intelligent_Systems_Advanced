@@ -18,12 +18,12 @@ namespace Keypad
     const struct {
         const float 
             field[num_keys] = {
-                      V(1)  ,   V(2)    ,   V(3)    ,   V(4),
-                      V(5)  ,   V(6)    ,   V(7)    ,   V(8),
-                      V(9)  ,   V(10)   ,   V(11)   ,   V(12),
-                      V(13) ,   V(14)   ,   V(15)   ,   V(16)
+                      1.28  ,  1.47  ,  1.67  ,  1.89,
+                      2.05  ,  2.27  ,  2.50  ,  2.74,
+                      2.94  ,  3.20  ,  3.47  ,  3.75,
+                      3.99  ,  4.31  ,  5.00  ,  5.00
             };
-        const float offset = V(1) / 2;
+        const float offset = 0.25 / 2;
     } env ;
     volatile int keycode = 0;
     struct Key { const char* name; void (*handler)(void); };
