@@ -118,11 +118,15 @@ namespace Keypad
     }
 
     // Currently this logic allows only single threaded processing
-    void Exec(void){state=setjmp(stack);interrupts();Task();}
+    void Exec(void) {
+      state=setjmp(stack);
+      interrupts();
+      Task();
+    }
 
     namespace Attach
     {
-        void Handler(int i,void (*p)(void)){key[i-1].handler=p;}
+        void Handler(int i,void (*p)(void)) { key[i-1].handler=p; }
         void Keys(void)
         {
             Handler(1,LCD::Draw::Stats);
@@ -163,3 +167,5 @@ namespace Keypad
         Attach::Timer();
     }
 }
+
+( i  ( ( ( ()) ) ) )  => { i + 1; return i; };
