@@ -1,27 +1,26 @@
 /******************************************************************************
  * File: ./LCD.h
- * Display: 20x4
- * Dependency: liquid-crystal
+ * Dependencies: LiquidCrystal.h
  ******************************************************************************/
 #include <LiquidCrystal.h>
 
 namespace LCD
 {
-    struct 
+    constexpr struct 
     {
-        const int
+        uint8_t
             rs=         A0,
             rw=         A1,
             enable=     A2
             ;
-        const int 
-            d[4]=     { A3 , A5 , 3 , 4 }
+        uint8_t
+            d[4]=     { A3 , A5 , 4 , 5 }
             ;
     } pin ;
 
     constexpr struct
     {
-        unsigned char 
+        uint8_t 
             cols=       20,
             rows=       4
             ;
@@ -50,58 +49,7 @@ namespace LCD
     }
 
     template<typename T> inline void Print(T a){ lcd -> print(a); }
-    inline void Clear(){lcd->clear();}
-    inline void SetCursor(int col,int row){lcd->setCursor(col,row);}
-    inline void Write(unsigned char c){lcd->write(c);}
-    inline void Exec(void (*k)(LiquidCrystal*,unsigned char,unsigned char))
-    {k(lcd,env.cols,env.rows);}
-
-    namespace Sily 
-    {
-        constexpr unsigned char X = env.cols, Y = env.rows;
-        static char col=0, row=0;
-        static bool x=true, y=true;
-        inline char S(void){static char c='A'-1;return c=++c>'Z'?'A':c;}
-        inline char I(bool& b,char& val){if(b)val++;else val--;return val;}
-        inline void G(void){Clear();SetCursor(col,row);Write(S());delay(150);}
-        inline void M(bool& b,char& val,unsigned char max,unsigned char i){
-            static bool f=false;if(i){
-                I(b,val);
-                if(val==max)b=false,f=true;else if(val<0)b=true,f=true;
-                if(f){f=false;I(b,val);M(y,row,Y,i-1);}
-            }else{I(y,row);}}
-        inline void A(void){do{G();M(x,col,X,2);}while(not(col==0 and row==0));Clear();}
-    };
-
-    namespace Draw 
-    {
-        inline void Alphabet(void){Sily::A();}
-        inline void Stats(void)
-        {
-            const int refresh_rate = hz2millis(20);
-            static double wind_speed;
-            static int wind_direction;
-            static int direction;
-            static double speed;
-            static bool state = true;
-            
-            while(true)
-            {
-                wind_speed = WindSpeed::Value();
-                wind_direction = WindDirection::Value();
-                if( not state and not ( wind_direction == direction and speed == wind_speed ) )
-                    state = true, direction = wind_direction, speed = wind_speed;
-                if(state)
-                {
-                    Clear();
-                    Print("WindDirection:"); SetCursor(0,1);
-                    Print("  Value: "); Print(wind_direction); Print(" deg"); SetCursor(0,2);
-                    Print("WindSpeed:"); SetCursor(0,3);
-                    Print("  Value: "); Print(wind_speed); Print(" m/s");
-                }
-                state = false;
-                delay(500);
-            }
-        }
-    }
+    inline void Clear() { lcd -> clear(); }
+    inline void SetCursor(int col,int row){ lcd -> setCursor(col,row); }
+    inline void Write(uint8_t c){ lcd -> write(c); }
 }

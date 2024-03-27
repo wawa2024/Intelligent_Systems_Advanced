@@ -1,113 +1,78 @@
 /******************************************************************************
  * File: ./NET.h
- * Dependencies: Ethernet.h SPI.h
- * Board: Arduino Nano
- * Device: Ethernet Shield W5500
+ * Dependencies: Ethernet.h
  ******************************************************************************/
-#include <SPI.h>
 #include <Ethernet.h>
 
 namespace NET 
 {
-    struct{
-        const unsigned char mac[6] = {0xff,0xff,0xff,0xff,0xff,0xff};
-        const IPAddress
+    constexpr uint8_t MAC_6 = 0x73;
+    uint8_t mac[6] = { 0x44 , 0x76 , 0x56 , 0x10 , 0x00 , MAC_6 };
+
+    IPAddress
             ip{192,168,0,254},
             dns{1,1,1,1},
             gw{192,168,0,1},
             subnet{255,255,255,0};
-    }local;
 
-    EthernetClient localhost;
+    EthernetClient interface;
+    bool DHCPon;
+
+    char bin2hex(char c,int i)
+    { 
+        uint8_t mask = 0b1111; mask = ( i ? compl mask : mask );
+        char val = ( c & mask ) >> i;
+        return val > 9 ? 87 + val : 48 + val;
+    }
+
+    char* mac2string(void)
+    {
+        static char s[13] = {};
+        for( uint8_t j = 0, i = 0 ; i < sizeof(mac) ; i++ ) 
+            for(uint8_t k = 0 ; k <= 4; k += 4) 
+                s[j++] = bin2hex(mac[i],k);
+        return s;
+    }
 
     namespace Status 
     {
         char* Hardware(void){
-            auto hw = Ethernet.hardwareStatus();
+            EthernetHardwareStatus hw = Ethernet.hardwareStatus();
             return (char*)(
-                                hw == EthernetNoHardware ? "HW: NoHardware" :
-                                hw == EthernetW5100      ? "HW: W5100"      :
-                                hw == EthernetW5200      ? "HW: W5200"      :
-                                hw == EthernetW5500      ? "HW: W5500"      :
-                                                           "HW: Undefined"  );
+                                hw == EthernetNoHardware ? "HW NoHardware" :
+                                hw == EthernetW5100      ? "HW W5100"      :
+                                hw == EthernetW5200      ? "HW W5200"      :
+                                hw == EthernetW5500      ? "HW W5500"      :
+                                                           "HW Undefined"  );
         }
         char* Link(void){
-            auto stat = Ethernet.linkStatus();
+            EthernetLinkStatus stat = Ethernet.linkStatus();
             return (char*)(
-                                stat == Unknown ? "LINK: Unknown" :
-                                stat == LinkON  ? "LINK: ON"      :
-                                stat == LinkOFF ? "LINK: OFF"     :
-                                                  "LINK: Undefined");
-        }
-    }
-
-    int Connect(IPAddress ip, int port){return localhost.connect(ip,port);}
-    int Connect(char* url, int port){return localhost.connect(url,port);}
-
-    inline char demask(unsigned char c, unsigned char mask, int i)
-    { 
-        char val;
-        return ( val = ( ( c & ( mask >> i ) ) >> i ) < 10 )
-                ? 60 + val
-                : 101 + val - 10;
-    }
-
-    char* mac2string(unsigned char* mac)
-    {
-        static char str[13] = {};
-        unsigned char mask = 0b11110000;
-        for(int j=0,i=0;i<6;i++)
-        {
-            str[j++] = demask(mac[i],mask,0);
-            str[j++] = demask(mac[i],mask,4);
-        }
-        return str;
-    }
-
-    namespace Draw 
-    {
-        void IPstats(void)
-        {
-            LCD::Clear();
-            LCD::Print("IP: ");LCD::Print(Ethernet.localIP());
-            LCD::SetCursor(0,1);
-            LCD::Print("GW: ");LCD::Print(Ethernet.gatewayIP());
-            LCD::SetCursor(0,2);
-            LCD::Print("DNS: ");LCD::Print(Ethernet.dnsServerIP());
-            LCD::SetCursor(0,3);
-            LCD::Print("MASK: ");LCD::Print(Ethernet.subnetMask());
-            delay(hz2millis(5));
-        }
-        void HWstats(void)
-        {
-            LCD::Clear();
-            LCD::Print(Status::Hardware());
-            LCD::SetCursor(0,1);
-            LCD::Print(Status::Link());
-            LCD::SetCursor(0,2);
-            LCD::Print("MAC: ");LCD::Print(mac2string(local.mac));
-            LCD::SetCursor(0,3);
-            delay(hz2millis(5));
+                                stat == Unknown ? "LINK Unknown" :
+                                stat == LinkON  ? "LINK ON"      :
+                                stat == LinkOFF ? "LINK OFF"     :
+                                                  "LINK Undefined");
         }
     }
 
     void Init(void)
     {
-        Ethernet.begin(local.mac);
-        /*
-        Ethernet.begin(
-                        local.mac,
-                        local.ip,
-                        local.dns,
-                        local.gw,
-                        local.subnet
-                        );
-        */
+        if(DHCPon)
+        {
+            if( Ethernet.begin(mac) )
+                Serial.println("DHCP success");
+            else
+                Serial.println("DHCP failed");
+        } else {
+                Serial.println("DHCP off");
+                Ethernet.begin(
+                                mac,
+                                ip,
+                                dns,
+                                gw,
+                                subnet
+                                );
+        }
         Serial.println("NET initialized"); 
-        Serial.println(Status::Hardware());
-        Serial.println(Status::Link());
-
-        Keypad::Attach::Handler(3,Draw::IPstats);
-        Keypad::Attach::Handler(4,Draw::HWstats);
     }
 }
