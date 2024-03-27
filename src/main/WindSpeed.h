@@ -1,17 +1,17 @@
 /******************************************************************************
  * File: ./WindSpeed.h
- * Dependency: ./Utils.h
+ * Requires: Utils.h
  ******************************************************************************/
 namespace WindSpeed
 {
-    struct 
+    constexpr struct 
     {
-        const int
+        uint8_t
             input=      2
             ;
     } pin ;
 
-    constexpr int
+    constexpr uint8_t 
         t_size=     10
         ;
     volatile unsigned long
@@ -22,9 +22,9 @@ namespace WindSpeed
         t_array[t_size] = {}
         ;
 
-    void Interrupt(void)
+    void InterruptServiceRoutine(void)
     {
-        static volatile int i{0};
+        static volatile int i = 0;
 
         t_begin = t_end;
         t_end = millis();
@@ -34,35 +34,24 @@ namespace WindSpeed
         t_array[i++] = t_end - t_begin;
     }
 
-    inline double Value(void)
+    inline float Value(void)
     {
-        double sum = 0;
+        float sum = 0;
         for(int i=0 ; i < t_size ; i++)
         {
            sum += millis2hz(t_array[i]) * 0.699 ;
            sum -= sum > 0 ? 0.24 : 0 ;
         }
-        double&& average = sum / t_size;
+        float&& average = sum / t_size;
         return average;
     }
-
-    #ifdef LEAN
-    #else
-    inline void Print(void)
-    {
-        double&& wind_speed = Value();
-        Serial.print("Wind Speed: ");
-        Serial.print(wind_speed);
-        Serial.println(" m/s");
-    }
-    #endif
 
     inline void Init(void)
     {
         pinMode(pin.input,INPUT);
         attachInterrupt(
             digitalPinToInterrupt(pin.input),
-            Interrupt,
+            InterruptServiceRoutine,
             RISING
         );
     }

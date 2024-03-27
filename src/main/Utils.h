@@ -1,26 +1,29 @@
 /******************************************************************************
  * File: ./Utils.h
  ******************************************************************************/
-constexpr unsigned long     hz2millis(double f){return (int)(1000/f);}
-constexpr double            millis2hz(unsigned long t){return 1000/(double)t;}
-constexpr int               ref_voltage = 5;
-constexpr int               char2key(char c)
-{
-        return 
-            '*' == c ? 0 :
-            '7' == c ? 1 :
-            '4' == c ? 2 :
-            '1' == c ? 3 :
-            '0' == c ? 4 :
-            '8' == c ? 5 :
-            '5' == c ? 6 :
-            '2' == c ? 7 :
-            '#' == c ? 8 :
-            '9' == c ? 9 :
-            '6' == c ? 10 :
-            '3' == c ? 11 :
-            'd' == c or 'D' == c ? 12 :
-            'c' == c or 'C' == c ? 13 :
-            'b' == c or 'B' == c ? 14 :
-            'a' == c or 'A' == c ? 15 : NULL;
-}
+#define hz2millis(X)        ( (unsigned long) ( 1000 / (float) X ) )
+#define millis2hz(X)        ( 1000 / (float) X ) 
+#define ref_voltage         5
+#define Max_ADC_Ret         1023
+#define Voltage(PIN)        ( (float)analogRead(PIN) * (float)ref_voltage / (float)Max_ADC_Ret )
+#define KEY(X)              KEY_ ## X
+#define KEY_STAR            0
+#define KEY_7               1
+#define KEY_4               2
+#define KEY_1               3
+#define KEY_0               4
+#define KEY_8               5
+#define KEY_5               6
+#define KEY_2               7
+#define KEY_HASH            8
+#define KEY_9               9
+#define KEY_6               10
+#define KEY_3               11
+#define KEY_D               12
+#define KEY_d               12
+#define KEY_C               13
+#define KEY_c               13
+#define KEY_B               14
+#define KEY_b               14
+#define KEY_A               15
+#define KEY_a               15

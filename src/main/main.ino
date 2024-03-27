@@ -1,15 +1,18 @@
 /******************************************************************************
  * File: ./main.ino
  ******************************************************************************/
+#define DHCP
+#define DEBUG
+
 #include "Utils.h"
-#include "Debug.h"
 #include "WindDirection.h"
 #include "WindSpeed.h"
 #include "LCD.h"
 #include "Keypad.h"
 #include "COM.h"
 #include "NET.h"
-#include "Protocol.h"
+#include "MQTT.h"
+#include "Software.h"
 
 void setup()
 {
@@ -20,6 +23,7 @@ void setup()
     WindDirection::Init();
     NET::Init();
     MQTT::Init();
+    Software::Init();
 }
 
 void loop()
