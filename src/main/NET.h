@@ -16,7 +16,6 @@ namespace NET
             subnet{255,255,255,0};
 
     EthernetClient interface;
-    bool DHCPon;
 
     char bin2hex(char c,int i)
     { 
