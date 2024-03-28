@@ -14,8 +14,6 @@ namespace NET
             gw{192,168,0,1},
             subnet{255,255,255,0};
 
-    EthernetClient interface;
-
     char bin2hex(char c,int i)
     { 
         uint8_t mask = 0b1111; mask = ( i ? compl mask : mask );

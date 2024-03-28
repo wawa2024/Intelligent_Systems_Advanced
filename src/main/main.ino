@@ -10,13 +10,12 @@
 #include "LCD.h"
 #include "WindDirection.h"
 #include "WindSpeed.h"
-#include "Keypad.h"
+//#include "Keypad.h"
 #include "MQTT.h"
-#include "Software.h"
+//#include "Software.h"
 
 void setup()
 {
-    noInterrupts();
     COM::Init();
     NET::Init();
     LCD::Init();
@@ -24,13 +23,13 @@ void setup()
     WindSpeed::Init();
     WindDirection::Init();
 
-    Keypad::Init();
-    MQTT::Init();
-    Software::Init();
-    interrupts();
+//    Keypad::Init();
+//    Software::Init();
 }
 
 void loop()
 {
-    MQTT::POST(); Keypad::Exec(); delay(seconds2millis(1));
+    MQTT::POST(); 
+    //Keypad::Exec(); 
+    delay(seconds2millis(1));
 }

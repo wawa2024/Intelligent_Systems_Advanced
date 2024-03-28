@@ -17,7 +17,9 @@ namespace MQTT
     } topic ;
 
     char* clientId = "a731fsd4";
-    PubSubClient client( ip, port, NET::interface );
+    char* groupId = "jrmlwwk2024";
+    EthernetClient interface;
+    PubSubClient client( ip, port, interface );
 
     void Error(void)
     {
@@ -47,7 +49,7 @@ namespace MQTT
 
     void POST(void)
     {
-        sprintf(buf,"{\"device_id\":\"%s\",\"data\":",clientId);
+        sprintf(buf,"{\"device_id\":\"%s\",\"data\":", groupId);
         Send();
         sprintf(buf,"{\"wind_speed\":%i,",WindSpeed::Value());
         Send();
