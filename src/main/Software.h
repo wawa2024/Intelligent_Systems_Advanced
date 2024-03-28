@@ -60,34 +60,30 @@ namespace Software
         {
             LCD::Clear();
             LCD::Print("DHCP ");
-            switch( NET::DHCPon ) 
-            {
-                case true: LCD::Print("ON"); break;
-                case false: LCD::Print("OFF"); break;
-                default: break;
-            }
+            if( NET::DHCPon ) 
+                LCD::Print("ON"); 
+            else
+                LCD::Print("OFF");
         }
         void yes(void)
         {
-            switch(flag)
+            if(flag)
             {
-                case true: 
-                        NET::DHCPon = true; 
-                        flag = false;
-                        init();
-                default: msg(); break;
+                NET::DHCPon = true; 
+                flag = false;
+                init();
             }
+            msg();
         }
         void no(void)
         {
-            switch(flag)
+            if(flag)
             {
-                case true: 
-                        NET::DHCPon = false; 
-                        flag = false;
-                        init();
-                default: msg(); break;
+                NET::DHCPon = false; 
+                flag = false;
+                init();
             }
+            msg();
         }
         void init(void)
         {
@@ -107,7 +103,7 @@ namespace Software
         for(uint8_t i=0 ; i < Keypad::num_keys ; i++)
             Keypad::AttachKeyHandler(i,Default);
 
-        Keypad::AttachKeyHandler(16,Bootmessage);
+        Keypad::AttachKeyHandler( 16 , Bootmessage);
         Keypad::AttachKeyHandler( KEY(STAR), DHCP::yes );
         Keypad::AttachKeyHandler( KEY(HASH), DHCP::no );
 

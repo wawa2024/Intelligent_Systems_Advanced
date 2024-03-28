@@ -12,7 +12,7 @@ namespace WindDirection
     } pin ;
 
     constexpr uint8_t a_size = 10;
-    uint16_t array[a_size] = {};
+    double array[a_size] = {};
 
     inline double mapd(double x, double in_min, double in_max, double out_min, double out_max)
     {     
@@ -26,9 +26,9 @@ namespace WindDirection
         i = i < 10 ? i : 0;
     }
 
-    uint16_t Calculate(void)
+    double Calculate(void)
     {
-        return mapd( Voltage(pin.input) , 0 , 3.8 , 0 , 359 );
+        return mapd( Voltage( pin.input ) , 0 , 3.8 , 0 , 359 );
     }
 
     void Fill(void)
@@ -44,7 +44,7 @@ namespace WindDirection
         }
     }
 
-    uint16_t Average(void)
+    double Average(void)
     {
         Push( Calculate() );
         uint16_t sum = 0;
@@ -60,7 +60,7 @@ namespace WindDirection
         return sum / a_size;
     }
 
-    inline uint16_t Value(void)
+    inline double Value(void)
     {
         return Average();
     }

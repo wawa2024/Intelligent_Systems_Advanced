@@ -70,7 +70,7 @@ namespace Keypad
 
     void ScanKeys(void)
     {
-        double tmp = 0 ;
+        volatile double tmp = 0 ;
 
         for( uint8_t i=0 ; i < 100 ; i++ ) 
         {
@@ -83,7 +83,7 @@ namespace Keypad
         for( uint8_t i=0 ; i < num_keys ; i++ )
         {
             const double& f = env.field[i];
-            double low = f - env.offset, high = f + env.offset;
+            volatile double low = f - env.offset, high = f + env.offset;
             if( ( low < voltage ) and ( voltage < high ) )
             { 
                 keycode = i + 1; 
@@ -112,7 +112,7 @@ namespace Keypad
     {
         ITimer1.init();
         if( ITimer1.attachInterruptInterval( hz2millis(15) , ScanKeys ) )
-            Serial.print("ITimer1 ON"); 
+            Serial.println("ITimer1 ON"); 
         else
             Serial.println("ITimer1 ERROR");
     }

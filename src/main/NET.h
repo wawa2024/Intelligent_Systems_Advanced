@@ -57,15 +57,14 @@ namespace NET
 
     void Init(void)
     {
-        switch(DHCPon)
+        if(DHCPon)
         {
-            case true:
-                if(Ethernet.begin(mac))
-                    Serial.println("DHCP success");
-                else
-                    Serial.println("DHCP failed");
-                break;
-            case false:
+            if( Ethernet.begin(mac) )
+                Serial.println("DHCP success");
+            else
+                Serial.println("DHCP failed");
+        } else {
+                Serial.println("DHCP off");
                 Ethernet.begin(
                                 mac,
                                 ip,
@@ -73,8 +72,6 @@ namespace NET
                                 gw,
                                 subnet
                                 );
-                break;
-            default: break;
         }
         Serial.println("NET initialized"); 
     }
