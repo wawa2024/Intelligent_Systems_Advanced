@@ -17,7 +17,7 @@ namespace MQTT
     } topic ;
 
     char* groupId = "jrmlwwk2024";
-    char* clientId = "a731fsd4";
+    char* clientId = groupId;
 
     EthernetClient interface;
     PubSubClient client( ip, port, interface );
