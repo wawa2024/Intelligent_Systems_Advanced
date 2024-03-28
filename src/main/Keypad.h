@@ -6,7 +6,7 @@ namespace Keypad
 {
     constexpr uint8_t num_keys = 4 * 4, bus_size = 1;
 
-    volatile uint8_t keycode = 17;
+    volatile uint8_t keycode = 16;
     volatile double voltage = 0.0;
 
     constexpr struct {
@@ -45,8 +45,7 @@ namespace Keypad
         { "D" , NULL },
         { "C" , NULL },
         { "B" , NULL },
-        { "A" , NULL },
-        { "@" , NULL }
+        { "A" , NULL }
     };
 
     inline void AttachKeyHandler( uint8_t i, void(*p)(void) ) 
@@ -123,5 +122,3 @@ namespace Keypad
         InitTimer();
     }
 }
-
-( i  ( ( ( ()) ) ) )  => { i + 1; return i; };

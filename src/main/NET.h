@@ -55,24 +55,35 @@ namespace NET
         }
     }
 
+    namespace Update
+    {
+        void IP(void)
+        {
+            ip = Ethernet.localIP();
+            gw = Ethernet.gatewayIP();
+            dns = Ethernet.dnsServerIP();
+            subnet = Ethernet.subnetMask();
+        }
+    }
+
     void Init(void)
     {
-        if(DHCPon)
-        {
-            if( Ethernet.begin(mac) )
-                Serial.println("DHCP success");
-            else
-                Serial.println("DHCP failed");
-        } else {
-                Serial.println("DHCP off");
-                Ethernet.begin(
-                                mac,
-                                ip,
-                                dns,
-                                gw,
-                                subnet
-                                );
+        #ifdef DEBUG
+        if( Ethernet.begin(mac) )
+            Serial.println("DHCP success");
+        else
+            Serial.println("DHCP failed");
+        #else
+        Serial.println("DHCP off");
+        Ethernet.begin(
+                        mac,
+                        ip,
+                        dns,
+                        gw,
+                        subnet
+                        );
         }
+        #endif
         Serial.println("NET initialized"); 
     }
 }

@@ -7,43 +7,39 @@
 
 namespace MQTT
 {
-    static char buf[128] = {};
+    static char buf[256] = {};
 
-    constexpr struct {
-        uint16_t port = 1883;
-        uint8_t ip [4] = { 10,6,0,21 };
-    } remote ;
+    uint16_t port = 1883;
+    uint8_t ip [4] = { 10,6,0,21 };
 
     struct {
-        char* username = "jrmlww2024";
+        char* username = "a731fsd4";
         char* password = "tamk";
         char* id = username;
         struct {
-            char* in = "ICT1B_in_2020";
-            char* out = "ICT1B_out_2020";
+            char* in = "ICT4_in_2020";
+            char* out = "ICT4_out_2020";
         } topic ;
     } host ;
 
     void Callback(char*,uint8_t*,uint8_t);
 
-    PubSubClient client(remote.ip,remote.port,Callback,NET::interface);
+    PubSubClient* client = 00;
 
     bool Error(void)
     {
-        Serial.print("MQTT failed to connect: ");
-        Serial.println( client.state() );
-        return 0;
+        Serial.println("MQTT failed to connect");
+        return false;
     }
 
     bool Connect(void)
     {
-        if( not client.connected() )
+        if( not client->connected() )
         {
             Serial.println("Connecting...");
-            if( client.connect( host.username , host.id , host.password ) )
+            if( client->connect( host.username ) )
             {
                 Serial.println("Connection established");
-                client.subscribe( host.topic.in );
             } else {
                 return Error();
             }
@@ -62,11 +58,12 @@ namespace MQTT
 
     bool Send(void)
     {
-        if( client.connected() )
-            client.publish( host.topic.out , buf );
-        else
+        if( client -> connected() ) {
+            client -> publish( host.topic.out , buf );
+            return true;
+        } else {
             return false; 
-        return true;
+        }
     }
 
     void Callback(char* topic, uint8_t* payload, uint8_t size)
@@ -97,6 +94,15 @@ namespace MQTT
         {
             Error();
             Session();
+        }
+    }
+
+    void Init(void)
+    {
+        if(not client)
+        {
+            static PubSubClient host( ip, port, NET::interface );
+            client = &host;
         }
     }
 }
