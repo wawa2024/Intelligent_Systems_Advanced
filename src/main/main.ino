@@ -11,8 +11,12 @@
 #include "WindDirection.h"
 #include "WindSpeed.h"
 #include "MQTT.h"
-//#include "Keypad.h"
-//#include "Software.h"
+
+#ifdef KEYPAD
+#include "Keypad.h"
+#endif
+
+#include "Software.h"
 
 void setup()
 {
@@ -29,7 +33,16 @@ void setup()
 
 void loop()
 {
+    WindSpeed::Update();
+    WindDirection::Update();
+
+    Software::VARstats();
+
     MQTT::POST(); 
-    //Keypad::Exec(); 
+
+    #ifdef KEYPAD
+    Keypad::Exec(); 
+    #endif 
+
     delay(seconds2millis(10));
 }

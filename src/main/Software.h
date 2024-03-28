@@ -64,6 +64,7 @@ namespace Software
 
     inline void Init(void)
     {
+    #ifdef KEYBOARD
         for(uint8_t i=0 ; i < Keypad::num_keys ; i++)
             Keypad::AttachKeyHandler(i,Default);
     #ifdef MQTT
@@ -71,6 +72,7 @@ namespace Software
         Keypad::AttachKeyHandler( KEY(B) ,HWstats);
     #endif    
         Keypad::AttachKeyHandler( KEY(D) ,VARstats);
+    #endif
 
     }
 }

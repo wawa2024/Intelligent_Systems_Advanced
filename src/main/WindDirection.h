@@ -46,10 +46,8 @@ namespace WindDirection
         }
     }
 
-    int Average(void)
+    int Update(void)
     {
-        noInterrupts();
-
         Push( Calculate() );
         uint16_t sum = 0;
         for( uint8_t i=0 ; i < a_size ; i++ )
@@ -68,14 +66,12 @@ namespace WindDirection
         Serial.print("WindDirection avg: "); Serial.println(avg);
         #endif
 
-        interrupts();
-
-        return ( avg - (int)avg ) >= 0.5 ? (int)avg + 1 : (int)avg ;
+        return (int)( ( avg - (int)avg ) >= 0.5 ? avg + 1 : avg );
     }
 
     inline int Value(void)
     {
-        return Average();
+        return Update();
     }
 
     void Init(void)

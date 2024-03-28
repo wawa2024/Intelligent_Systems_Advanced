@@ -17,7 +17,7 @@ namespace MQTT
     } topic ;
 
     char* groupId = "jrmlwwk2024";
-    char* clientId = groupId;
+    char* clientId = "a731fsd4";
 
     EthernetClient interface;
     PubSubClient client( ip, port, interface );
@@ -51,7 +51,9 @@ namespace MQTT
 
     void POST(void)
     {
-        sprintf(buf,"{\"%s_tnopeus\":%d,\"%s_tsuunta\":%d}",groupId,WindSpeed::Value(),groupId,WindDirection::Value());
+        sprintf(buf,"IOTJS={\"S_name1\": \"%s_tsuunta\", \"S_value1\": %d}",groupId,WindDirection::Value());
+        Send();
+        sprintf(buf,"IOTJS={\"S_name2\": \"%s_tnopeus\", \"S_value2\": %d}",groupId,WindSpeed::Value());
         Send();
     }
 
