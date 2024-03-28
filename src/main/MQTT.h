@@ -16,8 +16,9 @@ namespace MQTT
         char* out = "ICT4_out_2020";
     } topic ;
 
-    char* clientId = "a731fsd4";
     char* groupId = "jrmlwwk2024";
+    char* clientId = groupId;
+    //char* clientId = "a731fsd4";
     EthernetClient interface;
     PubSubClient client( ip, port, interface );
 
@@ -40,7 +41,8 @@ namespace MQTT
             }
         }
         if( client.connected() ) {
-            Serial.println("Sending MQTT package");
+            Serial.print("Sending MQTT package: ");
+            Serial.println(buf);
             client.publish(topic.out,buf);
         } else {
             Error();
@@ -51,9 +53,9 @@ namespace MQTT
     {
         sprintf(buf,"{\"device_id\":\"%s\",\"data\":", groupId);
         Send();
-        sprintf(buf,"{\"wind_speed\":%i,",WindSpeed::Value());
+        sprintf(buf,"{\"wind_speed\":%f,",WindSpeed::Value());
         Send();
-        sprintf(buf,"\"wind_direction\":%i}}",WindDirection::Value());
+        sprintf(buf,"\"wind_direction\":%f}}",WindDirection::Value());
         Send();
     }
 

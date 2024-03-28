@@ -10,8 +10,8 @@
 #include "LCD.h"
 #include "WindDirection.h"
 #include "WindSpeed.h"
-//#include "Keypad.h"
 #include "MQTT.h"
+//#include "Keypad.h"
 //#include "Software.h"
 
 void setup()
@@ -23,13 +23,13 @@ void setup()
     WindSpeed::Init();
     WindDirection::Init();
 
-//    Keypad::Init();
-//    Software::Init();
+    //Keypad::Init();
+    //Software::Init();
 }
 
 void loop()
 {
     MQTT::POST(); 
     //Keypad::Exec(); 
-    delay(seconds2millis(1));
+    delay(seconds2millis(2));
 }

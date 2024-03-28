@@ -24,6 +24,7 @@ namespace WindDirection
         static uint8_t i = 0;
         array[i] = a;
         i = i < 10 ? i : 0;
+        i++;
     }
 
     double Calculate(void)
@@ -44,8 +45,10 @@ namespace WindDirection
         }
     }
 
-    double Average(void)
+    uint16_t Average(void)
     {
+        noInterrupts();
+
         Push( Calculate() );
         uint16_t sum = 0;
         for( uint8_t i=0 ; i < a_size ; i++ )
@@ -57,7 +60,16 @@ namespace WindDirection
            Serial.print("] = "); Serial.println(array[i]);
            #endif
         }
-        return sum / a_size;
+        
+        uint16_t average = sum / a_size;
+        
+        #ifdef DEBUG
+        Serial.print("WindDirection average: "); Serial.println(average);
+        #endif
+
+        interrupts();
+
+        return average;
     }
 
     inline double Value(void)
