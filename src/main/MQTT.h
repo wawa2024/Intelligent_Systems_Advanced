@@ -12,15 +12,12 @@ namespace MQTT
     uint16_t port = 1883;
     uint8_t ip [4] = { 10,6,0,21 };
 
+    char* clientId = "a731fsd4";
+
     struct {
-        char* username = "a731fsd4";
-        char* password = "tamk";
-        char* id = username;
-        struct {
-            char* in = "ICT4_in_2020";
-            char* out = "ICT4_out_2020";
-        } topic ;
-    } host ;
+        char* in = "ICT4_in_2020";
+        char* out = "ICT4_out_2020";
+    } topic ;
 
     void Callback(char*,uint8_t*,uint8_t);
 
@@ -36,10 +33,10 @@ namespace MQTT
     {
         if( not client->connected() )
         {
-            Serial.println("Connecting...");
-            if( client->connect( host.username ) )
+            Serial.println("MQTT connecting...");
+            if( client->connect( clientId ) )
             {
-                Serial.println("Connection established");
+                Serial.println("MQTT connection established");
             } else {
                 return Error();
             }
@@ -59,7 +56,8 @@ namespace MQTT
     bool Send(void)
     {
         if( client -> connected() ) {
-            client -> publish( host.topic.out , buf );
+            Serial.println("Sending MQTT package");
+            client -> publish( topic.out , buf );
             return true;
         } else {
             return false; 
@@ -79,7 +77,7 @@ namespace MQTT
     {
         Serial.println("Beginning MQTT session...");
         if( Handshake() ) {
-            Serial.println("MQTT session active");
+            Serial.println("MQTT session established");
             return true;
         } else {
             Serial.println("MQTT failed");
@@ -89,12 +87,10 @@ namespace MQTT
 
     void POST(void)
     {
-        sprintf(buf,"{\"device_id\":\"%s\",\"data\":{\"wind_speed\":%i,\"wind_direction\":%i}}",host.username,WindSpeed::Value(),WindDirection::Value());
-        if( not Send() )
-        {
-            Error();
-            Session();
-        }
+        sprintf(buf,"{\"device_id\":\"%s\",\"data\":",clientId);
+        if(not Send()) Error();
+        sprintf(buf,"{\"wind_speed\":%i,\"wind_direction\":%i}}",WindSpeed::Value(),WindDirection::Value());
+        if(not Send()) Error();
     }
 
     void Init(void)
