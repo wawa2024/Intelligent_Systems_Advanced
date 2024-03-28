@@ -22,6 +22,7 @@ namespace Software
 
     void IPstats(void)
     {
+        NET::Update::IP();
         LCD::Clear();
         LCD::Print("IP ");     LCD::Print(NET::ip);
         LCD::SetCursor(0,1);    
@@ -70,7 +71,6 @@ namespace Software
             if(flag)
             {
                 NET::DHCPon = true; 
-                flag = false;
                 init();
             }
             msg();
@@ -80,7 +80,6 @@ namespace Software
             if(flag)
             {
                 NET::DHCPon = false; 
-                flag = false;
                 init();
             }
             msg();
@@ -102,10 +101,6 @@ namespace Software
     {
         for(uint8_t i=0 ; i < Keypad::num_keys ; i++)
             Keypad::AttachKeyHandler(i,Default);
-
-        Keypad::AttachKeyHandler( 16 , Bootmessage);
-        Keypad::AttachKeyHandler( KEY(STAR), DHCP::yes );
-        Keypad::AttachKeyHandler( KEY(HASH), DHCP::no );
 
         Keypad::AttachKeyHandler( KEY(A) ,IPstats);
         Keypad::AttachKeyHandler( KEY(B) ,HWstats);

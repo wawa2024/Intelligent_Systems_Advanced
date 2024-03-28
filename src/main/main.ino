@@ -20,10 +20,12 @@ void setup()
     Keypad::Init();
     WindSpeed::Init();
     WindDirection::Init();
+    NET::Init();
+    MQTT::Init();
     Software::Init();
 }
 
 void loop()
 {
-    Keypad::Exec(); delay(hz2millis(1));
+    MQTT::POST(); Keypad::Exec(); delay(hz2millis(1));
 }
