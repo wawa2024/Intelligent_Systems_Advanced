@@ -2,7 +2,7 @@
  * File: ./Utils.h
  ******************************************************************************/
 #define hz2millis(X)        ( (unsigned long) ( 1000 / (double) X ) )
-#define second2millis(X)    ( X * 1000 )
+#define seconds2millis(X)   ( X * 1000 )
 #define millis2hz(X)        ( 1000 / (double) X ) 
 #define ref_voltage         5
 #define Max_ADC_Ret         1023

@@ -19,8 +19,6 @@ namespace MQTT
     char* clientId = "a731fsd4";
     PubSubClient client( ip, port, NET::interface );
 
-    void Callback(char*,uint8_t*,uint8_t);
-
     void Error(void)
     {
         Serial.println("MQTT failed to connect");
@@ -29,10 +27,10 @@ namespace MQTT
 
     void Send(void)
     {
-        if( not ( client.connected() ) )
+        if( not client.connected() )
         {
             Serial.println("MQTT connecting...");
-            if(  client.connect( clientId ) )
+            if( client.connect(clientId) )
             {
                 Serial.println("MQTT connection established");
             } else {
@@ -41,19 +39,10 @@ namespace MQTT
         }
         if( client.connected() ) {
             Serial.println("Sending MQTT package");
-            client.publish( topic.out , buf );
+            client.publish(topic.out,buf);
         } else {
             Error();
         }
-    }
-
-    void Callback(char* topic, uint8_t* payload, uint8_t size)
-    {
-        char* msg = (char*) malloc(size + 1);
-        memcpy(msg,payload,size);
-        msg[size] = NULL;
-        Serial.println( msg );
-        free(msg);
     }
 
     void POST(void)

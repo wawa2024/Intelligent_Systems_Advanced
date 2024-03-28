@@ -5,28 +5,32 @@
 #define DEBUG
 
 #include "Utils.h"
-#include "WindDirection.h"
-#include "WindSpeed.h"
-#include "LCD.h"
-#include "Keypad.h"
 #include "COM.h"
 #include "NET.h"
+#include "LCD.h"
+#include "WindDirection.h"
+#include "WindSpeed.h"
+#include "Keypad.h"
 #include "MQTT.h"
 #include "Software.h"
 
 void setup()
 {
+    noInterrupts();
     COM::Init();
+    NET::Init();
     LCD::Init();
-    Keypad::Init();
+
     WindSpeed::Init();
     WindDirection::Init();
+
+    Keypad::Init();
     MQTT::Init();
-    NET::Init();
     Software::Init();
+    interrupts();
 }
 
 void loop()
 {
-    MQTT::POST(); Keypad::Exec(); delay(hz2millis(1));
+    MQTT::POST(); Keypad::Exec(); delay(seconds2millis(1));
 }

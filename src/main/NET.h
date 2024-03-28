@@ -79,6 +79,5 @@ namespace NET
                         subnet
                         );
         #endif
-        Serial.println("NET initialized"); 
     }
 }
