@@ -64,17 +64,11 @@ namespace NET
 
     void Init(void)
     {
-<<<<<<< HEAD
         #ifdef DEBUG
-        if( Ethernet.begin(mac) );
+        if( Ethernet.begin(mac) )
             Serial.println("DHCP success");
         else
             Serial.println("DHCP failed");
-=======
-        #ifdef DHCP
-        if( Ethernet.begin(mac) ) Serial.println("DHCP success");
-        else Serial.println("DHCP failed");
->>>>>>> 5f9988dbcdc982ecbce054aff24aa318acac0769
         #else
         Serial.println("DHCP off");
         Ethernet.begin(

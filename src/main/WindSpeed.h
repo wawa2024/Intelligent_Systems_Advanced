@@ -24,7 +24,8 @@ namespace WindSpeed
 
     void InterruptServiceRoutine(void)
     {
-        static volatile int i = 0;
+        static volatile char i = 0;
+        static volatile char x = 0;
 
         t_begin = t_end;
         t_end = millis();
@@ -49,15 +50,15 @@ namespace WindSpeed
            #endif
         }
 
-        int average = sum / t_size;
+        double avg = sum / t_size;
 
         #ifdef DEBUG
-        Serial.print("WindSpeed: average = "); Serial.println(average);
+        Serial.print("WindSpeed: avg = "); Serial.println(avg);
         #endif
 
         interrupts();
 
-        return average;
+        return ( avg - (int)avg ) >= 0.5 ? (int)avg + 1 : (int)avg ;
     }
 
     inline int Value(void)

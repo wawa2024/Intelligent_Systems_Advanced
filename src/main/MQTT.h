@@ -51,11 +51,7 @@ namespace MQTT
 
     void POST(void)
     {
-        sprintf(buf,"{\"device_id\":\"%s\",\"data\":", groupId);
-        Send();
-        sprintf(buf,"{\"wind_speed\":%d,",WindSpeed::Value());
-        Send();
-        sprintf(buf,"\"wind_direction\":%d}}",WindDirection::Value());
+        sprintf(buf,"{\"%s_tnopeus\":%d,\"%s_tsuunta\":%d}",groupId,WindSpeed::Value(),groupId,WindDirection::Value());
         Send();
     }
 

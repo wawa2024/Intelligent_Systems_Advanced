@@ -12,7 +12,7 @@ namespace WindDirection
     } pin ;
 
     constexpr uint8_t a_size = 10;
-    double array[a_size] = {};
+    double a_array[a_size] = {};
 
     inline double mapd(double x, double in_min, double in_max, double out_min, double out_max)
     {     
@@ -22,7 +22,7 @@ namespace WindDirection
     void Push(uint16_t a)
     {
         static uint8_t i = 0;
-        array[i] = a;
+        a_array[i] = a;
         i = i < 10 ? i : 0;
         i++;
     }
@@ -54,23 +54,23 @@ namespace WindDirection
         uint16_t sum = 0;
         for( uint8_t i=0 ; i < a_size ; i++ )
         {
-            sum += array[i];
+            sum += a_array[i];
 
            #ifdef DEBUG
-           Serial.print("WindDirection: array["); Serial.print(i); 
-           Serial.print("] = "); Serial.println(array[i]);
+           Serial.print("WindDirection: a_array["); Serial.print(i); 
+           Serial.print("] = "); Serial.println(a_array[i]);
            #endif
         }
         
-        int average = sum / a_size;
+        double avg = sum / a_size;
         
         #ifdef DEBUG
-        Serial.print("WindDirection average: "); Serial.println(average);
+        Serial.print("WindDirection avg: "); Serial.println(avg);
         #endif
 
         interrupts();
 
-        return average;
+        return ( avg - (int)avg ) >= 0.5 ? (int)avg + 1 : (int)avg ;
     }
 
     inline int Value(void)
