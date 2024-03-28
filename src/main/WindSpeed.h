@@ -34,7 +34,7 @@ namespace WindSpeed
         t_array[i++] = t_end - t_begin;
     }
 
-    double Average(void)
+    int Average(void)
     {
         noInterrupts();
         double sum = 0;
@@ -49,7 +49,7 @@ namespace WindSpeed
            #endif
         }
 
-        double average = sum / t_size;
+        int average = sum / t_size;
 
         #ifdef DEBUG
         Serial.print("WindSpeed: average = "); Serial.println(average);
@@ -60,7 +60,7 @@ namespace WindSpeed
         return average;
     }
 
-    inline double Value(void)
+    inline int Value(void)
     {
         return Average();
     }

@@ -31,5 +31,5 @@ void loop()
 {
     MQTT::POST(); 
     //Keypad::Exec(); 
-    delay(seconds2millis(2));
+    delay(seconds2millis(10));
 }

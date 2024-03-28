@@ -18,7 +18,7 @@ namespace MQTT
 
     char* groupId = "jrmlwwk2024";
     char* clientId = groupId;
-    //char* clientId = "a731fsd4";
+
     EthernetClient interface;
     PubSubClient client( ip, port, interface );
 
@@ -53,9 +53,9 @@ namespace MQTT
     {
         sprintf(buf,"{\"device_id\":\"%s\",\"data\":", groupId);
         Send();
-        sprintf(buf,"{\"wind_speed\":%f,",WindSpeed::Value());
+        sprintf(buf,"{\"wind_speed\":%d,",WindSpeed::Value());
         Send();
-        sprintf(buf,"\"wind_direction\":%f}}",WindDirection::Value());
+        sprintf(buf,"\"wind_direction\":%d}}",WindDirection::Value());
         Send();
     }
 

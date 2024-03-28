@@ -35,17 +35,18 @@ namespace WindDirection
     void Fill(void)
     {
         static bool flag = true;
+        Serial.println("Filling WindDirection Array...");
         if(flag){
             for( uint8_t i=0 ; i < a_size ; i++)
             {
                 Push( Calculate() );
-                delay( hz2millis(1) );
+                delay( seconds2millis(1) );
             }
             flag = false;
         }
     }
 
-    uint16_t Average(void)
+    int Average(void)
     {
         noInterrupts();
 
@@ -61,7 +62,7 @@ namespace WindDirection
            #endif
         }
         
-        uint16_t average = sum / a_size;
+        int average = sum / a_size;
         
         #ifdef DEBUG
         Serial.print("WindDirection average: "); Serial.println(average);
@@ -72,7 +73,7 @@ namespace WindDirection
         return average;
     }
 
-    inline double Value(void)
+    inline int Value(void)
     {
         return Average();
     }
