@@ -7,13 +7,13 @@
 
 namespace MQTT
 {
-    static char buf[128] = {};
+    static char buf[256] = {};
 
     uint16_t port = 1883;
     uint8_t ip [4] = { 10,6,0,21 };
 
     struct {
-        char* username = "jrmlww2024";
+        char* username = "a731fsd4";
         char* password = "tamk";
         char* id = username;
         struct {
@@ -28,9 +28,8 @@ namespace MQTT
 
     bool Error(void)
     {
-        Serial.print("MQTT failed to connect: ");
-        Serial.println( client->state() );
-        return 0;
+        Serial.println("MQTT failed to connect");
+        return false;
     }
 
     bool Connect(void)
@@ -59,11 +58,12 @@ namespace MQTT
 
     bool Send(void)
     {
-        if( client -> connected() )
+        if( client -> connected() ) {
             client -> publish( host.topic.out , buf );
-        else
+            return true;
+        } else {
             return false; 
-        return true;
+        }
     }
 
     void Callback(char* topic, uint8_t* payload, uint8_t size)
