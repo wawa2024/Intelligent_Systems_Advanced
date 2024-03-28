@@ -6,22 +6,22 @@ namespace Keypad
 {
     constexpr uint8_t num_keys = 4 * 4, bus_size = 1;
 
-    volatile uint8_t keycode = 16;
-    volatile float voltage = 0.0;
+    volatile uint8_t keycode = 17;
+    volatile double voltage = 0.0;
 
     constexpr struct {
         uint8_t input = A6;
     } pin ;
 
     constexpr struct {
-        float 
+        double 
             field[num_keys] = {
                       1.30  ,  1.50  ,  1.70  ,  1.90,
                       2.07  ,  2.30  ,  2.53  ,  2.77,
                       2.96  ,  3.22  ,  3.49  ,  3.77,
                       4.01  ,  4.32  ,  4.65  ,  5.00
             };
-        float offset = 0.07; 
+        double offset = 0.07; 
     } env ;
 
     struct Key { 
@@ -70,22 +70,28 @@ namespace Keypad
 
     void ScanKeys(void)
     {
-        float tmp = 0 ;
-        for( uint8_t i=0 ; i < 100 ; i++ ) 
-            voltage = ( ( tmp = Voltage(pin.input) ) > voltage ? tmp : voltage );
+        double tmp = 0 ;
 
-        if( voltage < env.offset ) return;
+        for( uint8_t i=0 ; i < 100 ; i++ ) 
+        {
+            tmp = Voltage(pin.input);
+            voltage = tmp  > voltage ? tmp : voltage ;
+        }
+
+        if( voltage < 1 ) return;
 
         for( uint8_t i=0 ; i < num_keys ; i++ )
         {
-            const float& f = env.field[i];
-            float low = f - env.offset, high = f + env.offset;
+            const double& f = env.field[i];
+            double low = f - env.offset, high = f + env.offset;
             if( ( low < voltage ) and ( voltage < high ) )
             { 
                 keycode = i + 1; 
                 break; 
             }
         }
+
+        voltage = 0;
     }
 
     inline void Exec(void)
@@ -98,7 +104,6 @@ namespace Keypad
             #endif
             if(k.handler) k.handler();
         }
-        delay(hz2millis(1));
     }
 
     #define USE_TIMER_1 true

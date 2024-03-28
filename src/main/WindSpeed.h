@@ -34,19 +34,29 @@ namespace WindSpeed
         t_array[i++] = t_end - t_begin;
     }
 
-    inline float Value(void)
+    double Average(void)
     {
-        float sum = 0;
+        double sum = 0;
         for(int i=0 ; i < t_size ; i++)
         {
            sum += millis2hz(t_array[i]) * 0.699 ;
            sum -= sum > 0 ? 0.24 : 0 ;
+
+           #ifdef DEBUG
+           Serial.print("WindSpeed: t_array["); Serial.print(i); 
+           Serial.print("] = "); Serial.println(t_array[i]);
+           #endif
         }
-        float&& average = sum / t_size;
-        return average;
+
+        return sum / t_size ;
     }
 
-    inline void Init(void)
+    inline double Value(void)
+    {
+        return Average();
+    }
+
+    void Init(void)
     {
         pinMode(pin.input,INPUT);
         attachInterrupt(

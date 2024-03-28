@@ -1,11 +1,11 @@
 /******************************************************************************
  * File: ./Utils.h
  ******************************************************************************/
-#define hz2millis(X)        ( (unsigned long) ( 1000 / (float) X ) )
-#define millis2hz(X)        ( 1000 / (float) X ) 
+#define hz2millis(X)        ( (unsigned long) ( 1000 / (double) X ) )
+#define millis2hz(X)        ( 1000 / (double) X ) 
 #define ref_voltage         5
 #define Max_ADC_Ret         1023
-#define Voltage(PIN)        ( (float)analogRead(PIN) * (float)ref_voltage / (float)Max_ADC_Ret )
+#define Voltage(PIN)        ( (double)analogRead(PIN) * (double)ref_voltage / (double)Max_ADC_Ret )
 #define KEY(X)              KEY_ ## X
 #define KEY_STAR            0
 #define KEY_7               1

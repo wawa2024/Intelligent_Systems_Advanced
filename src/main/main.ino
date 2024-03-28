@@ -1,7 +1,6 @@
 /******************************************************************************
  * File: ./main.ino
  ******************************************************************************/
-#define DHCP
 #define DEBUG
 
 #include "Utils.h"
@@ -21,12 +20,10 @@ void setup()
     Keypad::Init();
     WindSpeed::Init();
     WindDirection::Init();
-    NET::Init();
-    MQTT::Init();
     Software::Init();
 }
 
 void loop()
 {
-    Keypad::Exec();
+    Keypad::Exec(); delay(hz2millis(1));
 }

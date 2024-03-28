@@ -47,7 +47,54 @@ namespace Software
     {
         LCD::Clear();
         LCD::Print("Arduino Boot Online");
+        LCD::SetCursor(0,1);
+        LCD::Print("Turn DHCP ON?");
+        LCD::SetCursor(0,2);
+        LCD::Print("yes=*, no=#");
     }
+
+    namespace DHCP 
+    {
+        static bool flag=true;
+        void msg(void)
+        {
+            LCD::Clear();
+            LCD::Print("DHCP ");
+            switch( NET::DHCPon ) 
+            {
+                case true: LCD::Print("ON"); break;
+                case false: LCD::Print("OFF"); break;
+                default: break;
+            }
+        }
+        void yes(void)
+        {
+            switch(flag)
+            {
+                case true: 
+                        NET::DHCPon = true; 
+                        flag = false;
+                        init();
+                default: msg(); break;
+            }
+        }
+        void no(void)
+        {
+            switch(flag)
+            {
+                case true: 
+                        NET::DHCPon = false; 
+                        flag = false;
+                        init();
+                default: msg(); break;
+            }
+        }
+        void init(void)
+        {
+            NET::Init();
+            flag=false;
+        }
+    } 
 
     void Default(void)
     {
@@ -61,9 +108,11 @@ namespace Software
             Keypad::AttachKeyHandler(i,Default);
 
         Keypad::AttachKeyHandler(16,Bootmessage);
+        Keypad::AttachKeyHandler( KEY(STAR), DHCP::yes );
+        Keypad::AttachKeyHandler( KEY(HASH), DHCP::no );
 
-        Keypad::AttachKeyHandler( KEY(STAR) ,VARstats);
         Keypad::AttachKeyHandler( KEY(A) ,IPstats);
         Keypad::AttachKeyHandler( KEY(B) ,HWstats);
+        Keypad::AttachKeyHandler( KEY(D) ,VARstats);
     }
 }

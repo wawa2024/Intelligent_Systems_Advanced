@@ -10,28 +10,22 @@ namespace NET
     uint8_t mac[6] = { 0x44 , 0x76 , 0x56 , 0x10 , 0x00 , MAC_6 };
 
     IPAddress
-    #ifdef DHCP
-            ip,
-            dns,
-            gw,
-            subnet;
-    #else
             ip{192,168,0,254},
             dns{1,1,1,1},
             gw{192,168,0,1},
             subnet{255,255,255,0};
-    #endif
 
     EthernetClient interface;
+    bool DHCPon;
 
-    inline char bin2hex(char c,int i)
+    char bin2hex(char c,int i)
     { 
         uint8_t mask = 0b1111; mask = ( i ? compl mask : mask );
         char val = ( c & mask ) >> i;
         return val > 9 ? 87 + val : 48 + val;
     }
 
-    inline char* mac2string(void)
+    char* mac2string(void)
     {
         static char s[13] = {};
         for( uint8_t j = 0, i = 0 ; i < sizeof(mac) ; i++ ) 
@@ -61,22 +55,27 @@ namespace NET
         }
     }
 
-    inline void Init(void)
+    void Init(void)
     {
-        #ifdef DHCP
-        if(Ethernet.begin(mac))
-            Serial.println("DHCP success");
-        else
-            Serial.println("DHCP failed");
-        #else
-        Ethernet.begin(
-                        mac,
-                        ip,
-                        dns,
-                        gw,
-                        subnet
-                        );
-        #endif
+        switch(DHCPon)
+        {
+            case true:
+                if(Ethernet.begin(mac))
+                    Serial.println("DHCP success");
+                else
+                    Serial.println("DHCP failed");
+                break;
+            case false:
+                Ethernet.begin(
+                                mac,
+                                ip,
+                                dns,
+                                gw,
+                                subnet
+                                );
+                break;
+            default: break;
+        }
         Serial.println("NET initialized"); 
     }
 }

@@ -28,14 +28,14 @@ namespace MQTT
 
     PubSubClient client(remote.ip,remote.port,Callback,NET::interface);
 
-    inline bool Error(void)
+    bool Error(void)
     {
-        Serial.print("Failed to connect: ");
+        Serial.print("MQTT failed to connect: ");
         Serial.println( client.state() );
         return 0;
     }
 
-    inline bool Connect(void)
+    bool Connect(void)
     {
         if( not client.connected() )
         {
@@ -52,7 +52,7 @@ namespace MQTT
         return true;
     }
 
-    inline bool Handshake(void)
+    bool Handshake(void)
     {
         for(uint8_t i=0; i<3 ; i++);
             if( Connect() )
@@ -60,7 +60,7 @@ namespace MQTT
         return false;
     }
 
-    inline bool Send(void)
+    bool Send(void)
     {
         if( client.connected() )
             client.publish( host.topic.out , buf );
@@ -78,7 +78,7 @@ namespace MQTT
         free(msg);
     }
 
-    inline bool Session(void)
+    bool Session(void)
     {
         Serial.println("Beginning MQTT session...");
         if( Handshake() ) {
@@ -90,12 +90,13 @@ namespace MQTT
         }
     }
 
-    inline void Init(void)
+    void POST(void)
     {
-        if( Session() )
+        sprintf(buf,"{\"device_id\":\"%s\",\"data\":{\"wind_speed\":%i,\"wind_direction\":%i}}",host.username,WindSpeed::Value(),WindDirection::Value());
+        if( not Send() )
         {
-            sprintf(buf,"Send MQTT msg: %i/%i/%i\n",2024,3,27);
-            Send();
+            Error();
+            Session();
         }
     }
 }
