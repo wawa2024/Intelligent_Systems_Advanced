@@ -29,38 +29,28 @@ namespace MQTT
         return false;
     }
 
-    bool Connect(void)
+    void Connect(void)
     {
-        if( not client->connected() )
+        Serial.println("MQTT connecting...");
+        if( client->connect( clientId ) )
         {
-            Serial.println("MQTT connecting...");
-            if( client->connect( clientId ) )
-            {
-                Serial.println("MQTT connection established");
-            } else {
-                return Error();
-            }
+            Serial.println("MQTT connection established");
+        } else {
+            Error();
         }
-        delay(hz2millis(2));
-        return true;
     }
 
-    bool Handshake(void)
+    void Send(void)
     {
-        for(uint8_t i=0; i<3 ; i++);
-            if( Connect() )
-                return true;
-        return false;
-    }
-
-    bool Send(void)
-    {
+        if( not client -> connected() )
+        {
+            Connect();
+        }
         if( client -> connected() ) {
             Serial.println("Sending MQTT package");
             client -> publish( topic.out , buf );
-            return true;
         } else {
-            return false; 
+            Error();
         }
     }
 
@@ -73,32 +63,22 @@ namespace MQTT
         free(msg);
     }
 
-    bool Session(void)
-    {
-        Serial.println("Beginning MQTT session...");
-        if( Handshake() ) {
-            Serial.println("MQTT session established");
-            return true;
-        } else {
-            Serial.println("MQTT failed");
-            return false;
-        }
-    }
-
     void POST(void)
     {
         sprintf(buf,"{\"device_id\":\"%s\",\"data\":",clientId);
-        if(not Send()) Error();
+        Send();
         sprintf(buf,"{\"wind_speed\":%i,\"wind_direction\":%i}}",WindSpeed::Value(),WindDirection::Value());
-        if(not Send()) Error();
+        Send();
     }
 
     void Init(void)
     {
+        Serial.println("MQTT initialization");
         if(not client)
         {
             static PubSubClient host( ip, port, NET::interface );
             client = &host;
+            Serial.println("MQTT initialized");
         }
     }
 }
