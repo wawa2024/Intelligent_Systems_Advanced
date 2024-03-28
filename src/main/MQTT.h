@@ -36,10 +36,10 @@ namespace MQTT
     {
         if( not client->connected() )
         {
-            Serial.println("Connecting...");
+            Serial.println("MQTT connecting...");
             if( client->connect( host.username ) )
             {
-                Serial.println("Connection established");
+                Serial.println("MQTT connection established");
             } else {
                 return Error();
             }
@@ -79,7 +79,7 @@ namespace MQTT
     {
         Serial.println("Beginning MQTT session...");
         if( Handshake() ) {
-            Serial.println("MQTT session active");
+            Serial.println("MQTT session established");
             return true;
         } else {
             Serial.println("MQTT failed");
