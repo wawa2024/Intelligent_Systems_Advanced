@@ -123,5 +123,3 @@ namespace Keypad
         InitTimer();
     }
 }
-
-( i  ( ( ( ()) ) ) )  => { i + 1; return i; };
