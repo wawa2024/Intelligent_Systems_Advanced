@@ -54,43 +54,6 @@ namespace Software
         LCD::Print("yes=*, no=#");
     }
 
-    namespace DHCP 
-    {
-        static bool flag=true;
-        void msg(void)
-        {
-            LCD::Clear();
-            LCD::Print("DHCP ");
-            if( NET::DHCPon ) 
-                LCD::Print("ON"); 
-            else
-                LCD::Print("OFF");
-        }
-        void yes(void)
-        {
-            if(flag)
-            {
-                NET::DHCPon = true; 
-                init();
-            }
-            msg();
-        }
-        void no(void)
-        {
-            if(flag)
-            {
-                NET::DHCPon = false; 
-                init();
-            }
-            msg();
-        }
-        void init(void)
-        {
-            NET::Init();
-            flag=false;
-        }
-    } 
-
     void Default(void)
     {
         LCD::Clear();

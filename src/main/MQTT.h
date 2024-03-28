@@ -67,7 +67,9 @@ namespace MQTT
     {
         sprintf(buf,"{\"device_id\":\"%s\",\"data\":",clientId);
         Send();
-        sprintf(buf,"{\"wind_speed\":%i,\"wind_direction\":%i}}",WindSpeed::Value(),WindDirection::Value());
+        sprintf(buf,"{\"wind_speed\":%i,",WindSpeed::Value());
+        Send();
+        sprintf(buf,"\"wind_direction\":%i}}",WindDirection::Value());
         Send();
     }
 
