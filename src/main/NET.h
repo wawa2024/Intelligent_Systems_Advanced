@@ -69,7 +69,7 @@ namespace NET
     void Init(void)
     {
         #ifdef DEBUG
-        if( Ethernet.begin(mac) )
+        if( Ethernet.begin(mac) );
             Serial.println("DHCP success");
         else
             Serial.println("DHCP failed");
@@ -84,6 +84,6 @@ namespace NET
                         );
         }
         #endif
-        Serial.println("NET initialized"); 
+        //Serial.println("NET initialized"); 
     }
 }
