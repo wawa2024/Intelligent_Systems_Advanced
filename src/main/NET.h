@@ -6,8 +6,7 @@
 
 namespace NET 
 {
-    constexpr uint8_t MAC_6 = 0x73;
-    uint8_t mac[6] = { 0x44 , 0x76 , 0x56 , 0x10 , 0x00 , MAC_6 };
+    uint8_t mac[6] = { 0x44 , 0x76 , 0x56 , 0x10 , 0x00 , 0x62 };
 
     IPAddress
             ip{192,168,0,254},
@@ -67,11 +66,9 @@ namespace NET
 
     void Init(void)
     {
-        #ifdef DEBUG
-        if( Ethernet.begin(mac) )
-            Serial.println("DHCP success");
-        else
-            Serial.println("DHCP failed");
+        #ifdef DHCP
+        if( Ethernet.begin(mac) ) Serial.println("DHCP success");
+        else Serial.println("DHCP failed");
         #else
         Serial.println("DHCP off");
         Ethernet.begin(
@@ -81,7 +78,6 @@ namespace NET
                         gw,
                         subnet
                         );
-        }
         #endif
         Serial.println("NET initialized"); 
     }

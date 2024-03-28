@@ -1,6 +1,7 @@
 /******************************************************************************
  * File: ./main.ino
  ******************************************************************************/
+#define DHCP
 #define DEBUG
 
 #include "Utils.h"
@@ -20,8 +21,8 @@ void setup()
     Keypad::Init();
     WindSpeed::Init();
     WindDirection::Init();
-    NET::Init();
     MQTT::Init();
+    NET::Init();
     Software::Init();
 }
 
