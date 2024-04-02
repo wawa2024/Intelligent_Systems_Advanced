@@ -62,15 +62,20 @@ namespace NET
         }
     }
 
-    void Init(void)
+    inline void Init(void)
     {
-        #ifdef DEBUG
-        if( Ethernet.begin(mac) )
-            Serial.println("DHCP success");
-        else
-            Serial.println("DHCP failed");
-        #else
-        Serial.println("DHCP off");
+    #ifdef DHCP
+    #ifdef DEBUG_NET
+        if( Ethernet.begin(mac) ) {
+            msgSerial(STRING_DHCP,STRING_success);
+        } else {
+            msgSerial(STRING_DHCP,STRING_failed);
+        }
+    #endif
+    #else
+    #ifdef DEBUG_NET
+        msgSerial(STRING_DHCP,STRING_OFF);
+    #endif
         Ethernet.begin(
                         mac,
                         ip,
@@ -78,6 +83,19 @@ namespace NET
                         gw,
                         subnet
                         );
-        #endif
+    #endif
+        Update::IP();
+    #ifdef DEBUG_NET
+        msgSerial(STRING_NET,STRING_initialized);
+        Serial.print("ip ");
+        Serial.print(ip);
+        Serial.print(", gateway ");
+        Serial.print(gw);
+        Serial.print(", dns ");
+        Serial.print(dns);
+        Serial.print(", subnet ");
+        Serial.println(subnet);
+        Serial.println(Status::Link());
+    #endif
     }
 }

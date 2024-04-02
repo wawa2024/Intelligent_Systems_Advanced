@@ -4,23 +4,51 @@
  ******************************************************************************/
 namespace Software
 {
-    void VARstats(void)
+    void Summary(void)
     {
         LCD::Clear();
-        LCD::Print("WindDirection:"); 
+        snprintf(buf,format_header,STRING_WindDirection); LCD::Flush();
         LCD::SetCursor(0,1);
-        LCD::Print("  Value: "); 
-        LCD::Print( WindDirection::Value() ); 
-        LCD::Print(" deg"); 
+        snprintf(buf,format_indent,STRING_mean,WindDirection::mean,STRING_deg); LCD::Flush();
         LCD::SetCursor(0,2);
-        LCD::Print("WindSpeed:"); 
+        snprintf(buf,format_header,STRING_WindSpeed); LCD::Flush();
         LCD::SetCursor(0,3);
-        LCD::Print("  Value: "); 
-        LCD::Print( WindSpeed::Value() ); 
-        LCD::Print(" m/s");
+        snprintf(buf,format_indent,STRING_mean,WindSpeed::mean,STRING_mps); LCD::Flush();
     }
 
-    #ifdef MQTT
+    void Template(char* s, int max, int mean, int min, char* unit)
+    {
+        LCD::Clear();
+        snprintf(buf,format_header,s); LCD::Flush();
+        LCD::SetCursor(0,1);
+        snprintf(buf,format_indent,STRING_max,max,unit); LCD::Flush();
+        LCD::SetCursor(0,2);
+        snprintf(buf,format_indent,STRING_mean,mean,unit); LCD::Flush();
+        LCD::SetCursor(0,3);
+        snprintf(buf,format_indent,STRING_min,min,unit); LCD::Flush();
+    }
+
+    void WindDirection(void)
+    {
+        Template(STRING_WindDirection
+                ,WindDirection::max
+                ,WindDirection::mean
+                ,WindDirection::min
+                ,STRING_deg
+                );
+    }
+
+    void WindSpeed(void)
+    {
+        Template(STRING_WindSpeed
+                ,WindSpeed::max
+                ,WindSpeed::mean
+                ,WindSpeed::min
+                ,STRING_mps
+                );
+    }
+
+#ifdef NET
     void IPstats(void)
     {
         NET::Update::IP();
@@ -43,18 +71,50 @@ namespace Software
         LCD::SetCursor(0,2);
         LCD::Print("MAC ");     LCD::Print(NET::mac2string());
         LCD::SetCursor(0,3);
+    #ifdef NET
+    #ifdef DHCP
+        LCD::Print("DHCP ON");
+    #else
+        LCD::Print("DHCP OFF");
+    #endif
+    #else
+
+    #endif
     }
+
+    void MQTTstats(void)
+    {
+        NET::Update::IP();
+        LCD::Clear();
+        LCD::Print("MQTT ");    LCD::Print(MQTT::Checkup());
+        LCD::SetCursor(0,1);    
+        LCD::Print("HOST ");    LCD::Print(MQTT::IP);
+        LCD::SetCursor(0,2);
+        LCD::Print("PORT ");    LCD::Print(MQTT::port);
+        LCD::SetCursor(0,3);
+        LCD::Print("ID ");      LCD::Print(MQTT::groupId);
+    }
+#endif
 
     void Bootmessage(void)
     {
         LCD::Clear();
-        LCD::Print("Arduino Boot Online");
+        LCD::Print("ARDUINO BOOT ");
+        LCD::Print(STRING_ONLINE);
         LCD::SetCursor(0,1);
-        LCD::Print("Turn DHCP ON?");
-        LCD::SetCursor(0,2);
-        LCD::Print("yes=*, no=#");
-    }
+    #ifdef NET
+        LCD::Print(STRING_DHCP);
+        LCD::Print(STRING_SPACE);
+    #ifdef DHCP
+        LCD::Print(STRING_ON);
+    #else
+        LCD::Print(STRING_OFF);
     #endif
+        LCD::Print(STRING_NET);
+        LCD::Print(STRING_SPACE);
+        LCD::Print(STRING_DISABLED);
+    #endif
+    }
 
     void Default(void)
     {
@@ -64,15 +124,22 @@ namespace Software
 
     inline void Init(void)
     {
-    #ifdef KEYBOARD
+    #ifdef KEYPAD
         for(uint8_t i=0 ; i < Keypad::num_keys ; i++)
             Keypad::AttachKeyHandler(i,Default);
-    #ifdef MQTT
-        Keypad::AttachKeyHandler( KEY(A) ,IPstats);
-        Keypad::AttachKeyHandler( KEY(B) ,HWstats);
-    #endif    
-        Keypad::AttachKeyHandler( KEY(D) ,VARstats);
+    #ifdef NET
+        Keypad::AttachKeyHandler(KEY(A),IPstats);
+        Keypad::AttachKeyHandler(KEY(B),HWstats);
+        Keypad::AttachKeyHandler(KEY(1),MQTTstats);
     #endif
-
+        Keypad::AttachKeyHandler(KEY(2),Summary);
+        Keypad::AttachKeyHandler(KEY(3),WindDirection);
+        Keypad::AttachKeyHandler(KEY(4),WindSpeed);
+        Keypad::AttachKeyHandler(KEY(C),Bootmessage);
+    #endif
+    #ifdef DEBUG_SOFTWARE
+        msgSerial(STRING_Software,STRING_initialized);
+    #endif
+        Bootmessage();
     }
 }

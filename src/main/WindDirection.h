@@ -4,79 +4,98 @@
  ******************************************************************************/
 namespace WindDirection 
 {
-    constexpr struct
+    struct { uint8_t input = A7; } pin;
+
+    const uint8_t t_size = 10;
+    float t_array[t_size] = {};
+
+    int max = 0 , mean = 0 , min = 0;
+
+    void Push(float x)
     {
-        uint8_t
-            input=  A7
-            ;
-    } pin ;
+        static uint8_t i = 0;
+        i = i < 10 ? i : 0;
+        t_array[i++] = x;
+    }
 
-    constexpr uint8_t a_size = 10;
-    double a_array[a_size] = {};
-
-    inline double mapd(double x, double in_min, double in_max, double out_min, double out_max)
+    float mapd(float x, float in_min, float in_max, float out_min, float out_max)
     {     
         return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min; 
     }
 
-    void Push(uint16_t a)
-    {
-        static uint8_t i = 0;
-        a_array[i] = a;
-        i = i < 10 ? i : 0;
-        i++;
-    }
-
-    double Calculate(void)
+    float Calculate(void)
     {
         return mapd( Voltage( pin.input ) , 0 , 3.8 , 0 , 359 );
     }
 
     void Fill(void)
     {
-        static bool flag = true;
-        Serial.println("Filling WindDirection Array...");
-        if(flag){
-            for( uint8_t i=0 ; i < a_size ; i++)
-            {
-                Push( Calculate() );
-                delay( seconds2millis(1) );
-            }
-            flag = false;
-        }
-    }
-
-    int Update(void)
-    {
-        Push( Calculate() );
-        uint16_t sum = 0;
-        for( uint8_t i=0 ; i < a_size ; i++ )
+    #ifdef DEBUG_WINDDIRECTION
+        Serial.print("Filling ");
+        Serial.print(STRING_WindDirection);
+        Serial.print("Array");
+    #endif
+        for( uint8_t i=0 ; i < t_size ; i++)
         {
-            sum += a_array[i];
-
-           #ifdef DEBUG
-           Serial.print("WindDirection: a_array["); Serial.print(i); 
-           Serial.print("] = "); Serial.println(a_array[i]);
-           #endif
-        }
-        
-        double avg = sum / a_size;
-        
-        #ifdef DEBUG
-        Serial.print("WindDirection avg: "); Serial.println(avg);
+            Push( Calculate() );
+        #ifdef DEBUG_WINDDIRECTION
+            Serial.print(STRING_DOT);
         #endif
-
-        return (int)( ( avg - (int)avg ) >= 0.5 ? avg + 1 : avg );
+            delay(seconds2millis(1));
+        }
+    #ifdef DEBUG_WINDDIRECTION
+        Serial.println(STRING_NONE);
+    #endif
+        return;
     }
 
-    inline int Value(void)
+    void Update(void)
     {
-        return Update();
+        float sum = 0, t_min = 1000, t_max = 0;
+
+        Push( Calculate() );
+
+    #ifdef DEBUG_WINDDIRECTION
+        Serial.print(STRING_WindDirection);
+        Serial.print(STRING_COLON);
+        Serial.print(STRING_SPACE);
+        Serial.print(STRING_BRACKET_START);
+    #endif
+        for( uint8_t i=0 ; i < t_size ; i++ )
+        {
+            float& tmp = t_array[i];
+            sum += tmp;
+
+            t_min = t_min > tmp ? tmp : t_min;
+            t_max = t_max < tmp ? tmp : t_max;
+
+        #ifdef DEBUG_WINDDIRECTION
+            Serial.print("\"t_array[");  Serial.print(i); 
+            Serial.print("]\": ");       Serial.print(tmp);
+            if( i != ( t_size - 1 ) )    Serial.print(", ");
+        #endif
+        }
+    #ifdef DEBUG_WINDDIRECTION
+        Serial.println(STRING_BRACKET_END);
+    #endif
+
+        mean = round2int( sum / t_size );
+        max = t_max;
+        min = t_min;
+
+    #ifdef DEBUG_WINDDIRECTION
+        printJSON(STRING_WindDirection,max,mean,min);
+    #endif
     }
 
-    void Init(void)
+    inline int Value(void) { return mean; }
+
+    inline void Init(void)
     {
         pinMode(pin.input,INPUT);
         Fill();
+    #ifdef DEBUG_WINDDIRECTION
+        msgSerial(STRING_WindDirection,STRING_initialized);
+    #endif
     }
 }

@@ -2,18 +2,25 @@
  * File: ./main.ino
  ******************************************************************************/
 #define DHCP
-#define DEBUG
+#define NET
+//#define DEBUG
+#define KEYPAD
 
+#include "IO.h"
 #include "Utils.h"
+
 #include "COM.h"
-#include "NET.h"
 #include "LCD.h"
 #include "WindDirection.h"
 #include "WindSpeed.h"
-#include "MQTT.h"
+
+#ifdef NET
+    #include "NET.h"
+    #include "MQTT.h"
+#endif
 
 #ifdef KEYPAD
-#include "Keypad.h"
+    #include "Keypad.h"
 #endif
 
 #include "Software.h"
@@ -21,28 +28,34 @@
 void setup()
 {
     COM::Init();
-    NET::Init();
     LCD::Init();
+
+#ifdef NET
+    NET::Init();
+#endif
 
     WindSpeed::Init();
     WindDirection::Init();
 
-    //Keypad::Init();
-    //Software::Init();
+#ifdef KEYPAD
+    Keypad::Init();
+#endif
+
+    Software::Init();
+
+    Wait(3);
 }
 
 void loop()
 {
-    WindSpeed::Update();
-    WindDirection::Update();
-
-    Software::VARstats();
-
+#ifdef NET
     MQTT::POST(); 
-
-    #ifdef KEYPAD
+#endif
+#ifdef KEYPAD
     Keypad::Exec(); 
-    #endif 
+#endif 
+    WindDirection::Update();
+    WindSpeed::Update();
 
-    delay(seconds2millis(10));
+    delay(seconds2millis(1));
 }

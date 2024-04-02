@@ -1,12 +1,12 @@
 /******************************************************************************
  * File: ./Utils.h
  ******************************************************************************/
-#define hz2millis(X)        ( (unsigned long) ( 1000 / (double) X ) )
+#define hz2millis(X)        ( (unsigned long) ( 1000 / (float) X ) )
+#define millis2hz(X)        ( 1000 / (float) X ) 
 #define seconds2millis(X)   ( X * 1000 )
-#define millis2hz(X)        ( 1000 / (double) X ) 
+#define millis2seconds(X)   ( X / 1000 )
 #define ref_voltage         5
 #define Max_ADC_Ret         1023
-#define Voltage(PIN)        ( (double)analogRead(PIN) * (double)ref_voltage / (double)Max_ADC_Ret )
 #define KEY(X)              KEY_ ## X
 #define KEY_STAR            0
 #define KEY_7               1
@@ -28,3 +28,29 @@
 #define KEY_b               14
 #define KEY_A               15
 #define KEY_a               15
+
+float Voltage(uint8_t PIN) { 
+    return (float)analogRead(PIN) * (float)ref_voltage / (float)Max_ADC_Ret;
+}
+
+int round2int(float x)
+{
+    return (int)( ( x - (int) x ) >= 0.5 ? x + 1 : x );
+}
+
+void Wait(uint16_t t) {
+#ifdef DEBUG
+    snprintf(buf,format_msg,STRING_Waiting,t,STRING_seconds); dump();
+#endif
+    for(uint8_t i=0 ; i < t ; i++)
+    {
+        delay(seconds2millis(1));
+    #ifdef DEBUG
+        Serial.print(STRING_DOT);
+    #endif
+    }
+#ifdef DEBUG
+    Serial.println(STRING_NONE);
+#endif
+}
+
