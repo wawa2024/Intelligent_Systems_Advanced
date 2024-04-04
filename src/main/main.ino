@@ -1,9 +1,10 @@
 /******************************************************************************
  * File: ./main.ino
  ******************************************************************************/
-#define DHCP
+//#define DHCP
 #define NET
-//#define DEBUG
+#define DEBUG
+#define DEBUG_KEYPAD
 #define KEYPAD
 
 #include "IO.h"

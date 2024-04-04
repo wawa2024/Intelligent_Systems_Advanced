@@ -67,14 +67,14 @@ namespace NET
     #ifdef DHCP
     #ifdef DEBUG_NET
         if( Ethernet.begin(mac) ) {
-            msgSerial(STRING_DHCP,STRING_success);
+            Serial.println(F("DHCP success"));
         } else {
-            msgSerial(STRING_DHCP,STRING_failed);
+            Serial.println(F("DHCP failed"));
         }
     #endif
     #else
     #ifdef DEBUG_NET
-        msgSerial(STRING_DHCP,STRING_OFF);
+        Serial.println(F("DHCP off"));
     #endif
         Ethernet.begin(
                         mac,
@@ -86,7 +86,7 @@ namespace NET
     #endif
         Update::IP();
     #ifdef DEBUG_NET
-        msgSerial(STRING_NET,STRING_initialized);
+        Serial.println("NET initialized");
         Serial.print("ip ");
         Serial.print(ip);
         Serial.print(", gateway ");

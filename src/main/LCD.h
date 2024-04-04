@@ -15,6 +15,12 @@ namespace LCD
 
     LiquidCrystal* lcd = 0;
 
+    template<typename T> inline void Print(T a){ lcd -> print(a); }
+    inline void Clear() { lcd -> clear(); }
+    inline void SetCursor(int col,int row){ lcd -> setCursor(col,row); }
+    inline void Write(uint8_t c){ lcd -> write(c); }
+    inline void Flush(void){ Print(buf); }
+
     inline void Init(void)
     {
         if(!lcd)
@@ -33,13 +39,8 @@ namespace LCD
             lcd = &dpy;
         }
     #ifdef DEBUG
-        msgSerial(STRING_LCD,STRING_initialized);
+        Serial.println(F("LCD initialized"));
     #endif
+        Clear(); Print(F("EXECUTING BOOT"));
     }
-
-    template<typename T> inline void Print(T a){ lcd -> print(a); }
-    inline void Clear() { lcd -> clear(); }
-    inline void SetCursor(int col,int row){ lcd -> setCursor(col,row); }
-    inline void Write(uint8_t c){ lcd -> write(c); }
-    inline void Flush(void){ Print(buf); }
 }

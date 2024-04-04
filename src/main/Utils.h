@@ -38,19 +38,4 @@ int round2int(float x)
     return (int)( ( x - (int) x ) >= 0.5 ? x + 1 : x );
 }
 
-void Wait(uint16_t t) {
-#ifdef DEBUG
-    snprintf(buf,format_msg,STRING_Waiting,t,STRING_seconds); dump();
-#endif
-    for(uint8_t i=0 ; i < t ; i++)
-    {
-        delay(seconds2millis(1));
-    #ifdef DEBUG
-        Serial.print(STRING_DOT);
-    #endif
-    }
-#ifdef DEBUG
-    Serial.println(STRING_NONE);
-#endif
-}
-
+void Wait(uint16_t t){ delay(seconds2millis(t)); }

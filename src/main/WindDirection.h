@@ -9,7 +9,7 @@ namespace WindDirection
     const uint8_t t_size = 10;
     float t_array[t_size] = {};
 
-    int max = 0 , mean = 0 , min = 0;
+    volatile int max = 0 , mean = 0 , min = 1000;
 
     void Push(float x)
     {
@@ -30,22 +30,11 @@ namespace WindDirection
 
     void Fill(void)
     {
-    #ifdef DEBUG_WINDDIRECTION
-        Serial.print("Filling ");
-        Serial.print(STRING_WindDirection);
-        Serial.print("Array");
-    #endif
         for( uint8_t i=0 ; i < t_size ; i++)
         {
             Push( Calculate() );
-        #ifdef DEBUG_WINDDIRECTION
-            Serial.print(STRING_DOT);
-        #endif
             delay(seconds2millis(1));
         }
-    #ifdef DEBUG_WINDDIRECTION
-        Serial.println(STRING_NONE);
-    #endif
         return;
     }
 
@@ -55,12 +44,6 @@ namespace WindDirection
 
         Push( Calculate() );
 
-    #ifdef DEBUG_WINDDIRECTION
-        Serial.print(STRING_WindDirection);
-        Serial.print(STRING_COLON);
-        Serial.print(STRING_SPACE);
-        Serial.print(STRING_BRACKET_START);
-    #endif
         for( uint8_t i=0 ; i < t_size ; i++ )
         {
             float& tmp = t_array[i];
@@ -68,24 +51,12 @@ namespace WindDirection
 
             t_min = t_min > tmp ? tmp : t_min;
             t_max = t_max < tmp ? tmp : t_max;
-
-        #ifdef DEBUG_WINDDIRECTION
-            Serial.print("\"t_array[");  Serial.print(i); 
-            Serial.print("]\": ");       Serial.print(tmp);
-            if( i != ( t_size - 1 ) )    Serial.print(", ");
-        #endif
         }
-    #ifdef DEBUG_WINDDIRECTION
-        Serial.println(STRING_BRACKET_END);
-    #endif
 
         mean = round2int( sum / t_size );
         max = t_max;
         min = t_min;
 
-    #ifdef DEBUG_WINDDIRECTION
-        printJSON(STRING_WindDirection,max,mean,min);
-    #endif
     }
 
     inline int Value(void) { return mean; }
@@ -95,7 +66,7 @@ namespace WindDirection
         pinMode(pin.input,INPUT);
         Fill();
     #ifdef DEBUG_WINDDIRECTION
-        msgSerial(STRING_WindDirection,STRING_initialized);
+        Serial.println(F("WindDirection initialized"));
     #endif
     }
 }

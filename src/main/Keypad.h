@@ -58,16 +58,9 @@ namespace Keypad
 #ifdef DEBUG_KEYPAD
     void Debug(void)
     {
-        Serial.print("Keypad::Exec "); 
-        Serial.print(STRING_BRACKET_START);
-        Serial.print("Pin: "); Serial.print(pin.input); Serial.print(": ");
-        Serial.print(STRING_COMMA);
-        Serial.print("Voltage: "); Serial.print( voltage ); 
-        Serial.print(STRING_COMMA);
-        Serial.print("Keycode: "); Serial.print( keycode );
-        Serial.print(STRING_COMMA);
-        Serial.print("Button: "); Serial.print( key[keycode-1].name );
-        Serial.println(STRING_BRACKET_END);
+        Serial.print(F("Voltage = ")); Serial.print( voltage ); 
+        Serial.print(F(", Keycode = ")); Serial.print( keycode ); 
+        Serial.print(F(", Button = ")); Serial.println( key[keycode-1].name );
     }
 #endif
 
@@ -102,10 +95,9 @@ namespace Keypad
         if(keycode)
         {
         #ifdef DEBUG_KEYPAD
-            msgSerial(STRING_Function,STRING_call);
             Debug();
         #endif
-            if(keycode) key[keycode-1].handler();
+            key[keycode-1].handler();
         }
     }
 
@@ -117,9 +109,9 @@ namespace Keypad
     {
         ITimer1.init();
         if( ITimer1.attachInterruptInterval( hz2millis(15) , ScanKeys ) )
-            Serial.println("ITimer1 ON"); 
+            Serial.println(F("ITimer1 ON")); 
         else
-            Serial.println("ITimer1 ERROR");
+            Serial.println(F("ITimer1 ERROR"));
     }
 #else
     #include <avr/interrupt.h>
@@ -134,7 +126,7 @@ namespace Keypad
     ISR(ANALOG_COMP_vect)
     {
     #ifdef DEBUG_KEYPAD
-        Serial.println("ANALOG_COMP_vect triggered");
+        Serial.println(F("ANALOG_COMP_vect call"));
         Debug();
     #endif
         ScanKeys(); 
@@ -150,7 +142,7 @@ namespace Keypad
         EnableAC();
     #endif
     #ifdef DEBUG_KEYPAD
-        msgSerial(STRING_Keypad,STRING_initialized);
+        Serial.println(F("Keypad initialized"));
     #endif
     }
 }

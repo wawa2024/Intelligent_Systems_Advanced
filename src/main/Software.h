@@ -4,47 +4,56 @@
  ******************************************************************************/
 namespace Software
 {
+    char s_wd[] = "WindDirection:"
+            , s_ws[] = "WindSpeed:"
+            , s_deg[] = " deg"
+            , s_mps[] = " m/s"
+            , s_max[] = "  max "
+            , s_mean[] = "  mean "
+            , s_min[] = "  min "
+            ;
+
     void Summary(void)
     {
         LCD::Clear();
-        snprintf(buf,format_header,STRING_WindDirection); LCD::Flush();
+        LCD::Print(s_wd); LCD::Flush();
         LCD::SetCursor(0,1);
-        snprintf(buf,format_indent,STRING_mean,WindDirection::mean,STRING_deg); LCD::Flush();
+        LCD::Print(s_mean); LCD::Print( WindDirection::mean ); LCD::Print(s_deg);
         LCD::SetCursor(0,2);
-        snprintf(buf,format_header,STRING_WindSpeed); LCD::Flush();
+        LCD::Print(s_ws); LCD::Flush();
         LCD::SetCursor(0,3);
-        snprintf(buf,format_indent,STRING_mean,WindSpeed::mean,STRING_mps); LCD::Flush();
+        LCD::Print(s_mean); LCD::Print( WindSpeed::mean ); LCD::Print(s_mps);
     }
 
     void Template(char* s, int max, int mean, int min, char* unit)
     {
         LCD::Clear();
-        snprintf(buf,format_header,s); LCD::Flush();
+        LCD::Print(s);
         LCD::SetCursor(0,1);
-        snprintf(buf,format_indent,STRING_max,max,unit); LCD::Flush();
+        LCD::Print(s_max); LCD::Print( max ); LCD::Print(unit);
         LCD::SetCursor(0,2);
-        snprintf(buf,format_indent,STRING_mean,mean,unit); LCD::Flush();
+        LCD::Print(s_mean); LCD::Print( mean ); LCD::Print(unit);
         LCD::SetCursor(0,3);
-        snprintf(buf,format_indent,STRING_min,min,unit); LCD::Flush();
+        LCD::Print(s_min); LCD::Print( min ); LCD::Print(unit);
     }
 
     void WindDirection(void)
     {
-        Template(STRING_WindDirection
+        Template(s_wd
                 ,WindDirection::max
                 ,WindDirection::mean
                 ,WindDirection::min
-                ,STRING_deg
+                ,s_deg
                 );
     }
 
     void WindSpeed(void)
     {
-        Template(STRING_WindSpeed
+        Template(s_ws
                 ,WindSpeed::max
                 ,WindSpeed::mean
                 ,WindSpeed::min
-                ,STRING_mps
+                ,s_mps
                 );
     }
 
@@ -99,21 +108,7 @@ namespace Software
     void Bootmessage(void)
     {
         LCD::Clear();
-        LCD::Print("ARDUINO BOOT ");
-        LCD::Print(STRING_ONLINE);
-        LCD::SetCursor(0,1);
-    #ifdef NET
-        LCD::Print(STRING_DHCP);
-        LCD::Print(STRING_SPACE);
-    #ifdef DHCP
-        LCD::Print(STRING_ON);
-    #else
-        LCD::Print(STRING_OFF);
-    #endif
-        LCD::Print(STRING_NET);
-        LCD::Print(STRING_SPACE);
-        LCD::Print(STRING_DISABLED);
-    #endif
+        LCD::Print("ARDUINO BOOT ONLINE");
     }
 
     void Default(void)
@@ -130,15 +125,14 @@ namespace Software
     #ifdef NET
         Keypad::AttachKeyHandler(KEY(A),IPstats);
         Keypad::AttachKeyHandler(KEY(B),HWstats);
-        Keypad::AttachKeyHandler(KEY(1),MQTTstats);
+        Keypad::AttachKeyHandler(KEY(C),MQTTstats);
     #endif
-        Keypad::AttachKeyHandler(KEY(2),Summary);
-        Keypad::AttachKeyHandler(KEY(3),WindDirection);
-        Keypad::AttachKeyHandler(KEY(4),WindSpeed);
-        Keypad::AttachKeyHandler(KEY(C),Bootmessage);
+        Keypad::AttachKeyHandler(KEY(D),Summary);
+        Keypad::AttachKeyHandler(KEY(STAR),WindDirection);
+        Keypad::AttachKeyHandler(KEY(HASH),WindSpeed);
     #endif
     #ifdef DEBUG_SOFTWARE
-        msgSerial(STRING_Software,STRING_initialized);
+        Serial.println("Software initialized");
     #endif
         Bootmessage();
     }
