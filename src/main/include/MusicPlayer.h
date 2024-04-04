@@ -26,15 +26,15 @@ namespace MusicPlayer
   }
 
   void playSong() {
-    setTempo(in_your_face[0].frequency);
-    uint16_t repetitions = in_your_face[0].repetitions;
-    size_t song_length = sizeof(in_your_face) / sizeof(Note);
+    setTempo(grace[0].frequency);
+    uint16_t repetitions = grace[0].repetitions;
+    size_t song_length = sizeof(grace) / sizeof(Note);
 
     for (int times_played = 0; times_played < repetitions; times_played++) {
       for (int note_index = 1; note_index < song_length; note_index++) {
         // 0 index used for metadata ^
-        for (int repeat_note = 0; repeat_note < in_your_face[note_index].repetitions; repeat_note++) {
-          playNote(pin, in_your_face[note_index].frequency, in_your_face[note_index].division);
+        for (int repeat_note = 0; repeat_note < grace[note_index].repetitions; repeat_note++) {
+          playNote(pin, grace[note_index].frequency, grace[note_index].division);
         }
       }
     }
