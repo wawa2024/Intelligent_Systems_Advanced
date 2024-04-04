@@ -31,10 +31,7 @@ namespace WindDirection
     void Fill(void)
     {
         for( uint8_t i=0 ; i < t_size ; i++)
-        {
             Push( Calculate() );
-            delay(seconds2millis(1));
-        }
         return;
     }
 
@@ -42,7 +39,7 @@ namespace WindDirection
     {
         float sum = 0, t_min = 1000, t_max = 0;
 
-        Push( Calculate() );
+        Fill();
 
         for( uint8_t i=0 ; i < t_size ; i++ )
         {
