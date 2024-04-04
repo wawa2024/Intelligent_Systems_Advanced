@@ -19,7 +19,6 @@ namespace LCD
     inline void Clear() { lcd -> clear(); }
     inline void SetCursor(int col,int row){ lcd -> setCursor(col,row); }
     inline void Write(uint8_t c){ lcd -> write(c); }
-    inline void Flush(void){ Print(buf); }
 
     inline void Init(void)
     {
