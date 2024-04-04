@@ -65,17 +65,13 @@ namespace NET
     inline void Init(void)
     {
     #ifdef DHCP
-    #ifdef DEBUG_NET
         if( Ethernet.begin(mac) ) {
             Serial.println(F("DHCP success"));
         } else {
             Serial.println(F("DHCP failed"));
         }
-    #endif
     #else
-    #ifdef DEBUG_NET
         Serial.println(F("DHCP off"));
-    #endif
         Ethernet.begin(
                         mac,
                         ip,
@@ -85,17 +81,5 @@ namespace NET
                         );
     #endif
         Update::IP();
-    #ifdef DEBUG_NET
-        Serial.println("NET initialized");
-        Serial.print("ip ");
-        Serial.print(ip);
-        Serial.print(", gateway ");
-        Serial.print(gw);
-        Serial.print(", dns ");
-        Serial.print(dns);
-        Serial.print(", subnet ");
-        Serial.println(subnet);
-        Serial.println(Status::Link());
-    #endif
     }
 }

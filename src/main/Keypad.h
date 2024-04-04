@@ -6,7 +6,7 @@ namespace Keypad
 {
     constexpr uint8_t num_keys = 4 * 4, bus_size = 1;
 
-    volatile uint8_t keycode = 16;
+    volatile uint8_t keycode = 14;
     volatile float voltage = 0.0;
 
     constexpr struct { uint8_t input = A6; } pin;

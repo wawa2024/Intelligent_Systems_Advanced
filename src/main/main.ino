@@ -1,10 +1,8 @@
 /******************************************************************************
  * File: ./main.ino
  ******************************************************************************/
-//#define DHCP
+#define DHCP
 #define NET
-#define DEBUG
-#define DEBUG_KEYPAD
 #define KEYPAD
 
 #include "IO.h"
@@ -22,9 +20,9 @@
 
 #ifdef KEYPAD
     #include "Keypad.h"
+    #include "Software.h"
 #endif
 
-#include "Software.h"
 
 void setup()
 {
@@ -40,9 +38,8 @@ void setup()
 
 #ifdef KEYPAD
     Keypad::Init();
-#endif
-
     Software::Init();
+#endif
 
     Wait(3);
 }

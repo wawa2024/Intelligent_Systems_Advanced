@@ -7,50 +7,31 @@
 
 namespace MQTT
 {
-    static IPAddress IP{10,6,0,21};
-    static uint16_t port = 1883;
-    static uint8_t ip [4] = { 10,6,0,21 };
-    static char buf[256] = {};
+    IPAddress IP{10,6,0,21};
+    uint16_t port = 1883;
+    uint8_t ip [4] = { 10,6,0,21 };
+    bool status = false;
 
-    static struct {
+    char buf[256] = {};
+
+    struct {
         char* in = "ICT4_in_2020";
         char* out = "ICT4_out_2020";
     } topic ;
 
-    static char* groupId = "jrmlwwk2024";
+    char* groupId = "jrmlwwk2024";
 
     EthernetClient interface;
     PubSubClient client( ip, port, interface );
 
     char* Checkup(void)
     {
-        return client.connected() ? "CONNECTED" : "DISCONNECTED" ;
+        return status ? "CONNECTED" : "DISCONNECTED" ;
     }
 
-    bool Connect(void)
-    {
-        for(uint8_t i=0; i < 3 ; i++)
-        {
-            if( not client.connected() ) 
-            {
-                Serial.println(F("MQTT connecting..."));
-                if( client.connect(groupId) ) {
-                    Serial.println(F("MQTT connection established"));
-                    return true;
-                } else {
-                    Serial.println(F("MQTT failed to connect"));
-                }
-            } else {
-                break;
-            }
-        }
-        return false;
-    }
-
-    void Send(void)
+    void Debug(void)
     {
         static char s_dot[] = ".";
-    #ifdef DEBUG_MQTT
         Serial.print(F("IP "));
         Serial.print(NET::ip);
         Serial.print(F(" > "));
@@ -60,8 +41,6 @@ namespace MQTT
         Serial.print(ip[3]);
         Serial.print(F(": MQTT package, "));
         Serial.println(buf);
-    #endif
-        client.publish(topic.out,buf);
     }
 
     void POST(void)
@@ -70,13 +49,25 @@ namespace MQTT
         if( i++ < 10 );
         else 
         {
-            if( Connect() )
+            if( not status )
             {
-                sprintf(buf,"IOTJS={\"S_name1\": \"%s_tsuunta\", \"S_value1\": %d}",groupId,WindDirection::mean);
-                Send();
-                sprintf(buf,"IOTJS={\"S_name2\": \"%s_tnopeus\", \"S_value2\": %d}",groupId,WindSpeed::mean);
-                Send();
+                Serial.println(F("MQTT connecting..."));
+                if( client.connect(groupId) ) 
+                    Serial.println(F("MQTT connection established"));
+                else 
+                    Serial.println(F("MQTT failed to connect"));
             }
+
+            if( status = client.connected() )
+            {
+                Debug();
+                sprintf(buf,"IOTJS={\"S_name1\": \"%s_tsuunta\", \"S_value1\": %d}",groupId,WindDirection::mean);
+                client.publish(topic.out,buf);
+                Debug();
+                sprintf(buf,"IOTJS={\"S_name2\": \"%s_tnopeus\", \"S_value2\": %d}",groupId,WindSpeed::mean);
+                client.publish(topic.out,buf);
+            }
+
             i = 0;
         }
     }
