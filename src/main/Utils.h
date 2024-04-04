@@ -33,9 +33,4 @@ float Voltage(uint8_t PIN) {
     return (float)analogRead(PIN) * (float)ref_voltage / (float)Max_ADC_Ret;
 }
 
-int round2int(float x)
-{
-    return (int)( ( x - (int) x ) >= 0.5 ? x + 1 : x );
-}
-
 void Wait(uint16_t t){ delay(seconds2millis(t)); }
