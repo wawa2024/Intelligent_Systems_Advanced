@@ -62,8 +62,5 @@ namespace WindDirection
     {
         pinMode(pin.input,INPUT);
         Fill();
-    #ifdef DEBUG_WINDDIRECTION
-        Serial.println(F("WindDirection initialized"));
-    #endif
     }
 }

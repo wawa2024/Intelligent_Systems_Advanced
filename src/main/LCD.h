@@ -38,9 +38,6 @@ namespace LCD
             dpy.clear();
             lcd = &dpy;
         }
-    #ifdef DEBUG
-        Serial.println(F("LCD initialized"));
-    #endif
         Clear(); Print(F("EXECUTING BOOT"));
     }
 }

@@ -108,51 +108,8 @@ namespace Keypad
         }
     }
 
-/*
-#ifdef TIMER
-    #define USE_TIMER_2 true
-    #include <TimerInterrupt.h>
-
-    inline void InitTimer(void)
-    {
-        ITimer2.init();
-        if( ITimer2.attachInterruptInterval( hz2millis(15) , ScanKeys ) )
-            Serial.println(F("ITimer2 ON")); 
-        else
-            Serial.println(F("ITimer2 ERROR"));
-    }
-#else
-    #include <avr/interrupt.h>
-
-    inline void EnableAC(void)
-    { 
-        ACSR = 0b01000000; 
-        Wait(3);
-        ACSR|= 0b00001000;
-    }
-
-    ISR(ANALOG_COMP_vect)
-    {
-    #ifdef DEBUG_KEYPAD
-        Serial.println(F("ANALOG_COMP_vect call"));
-        Debug();
-    #endif
-        ScanKeys(); 
-    }
-#endif
-*/
     inline void Init(void)
     {
         pinMode(pin.input,INPUT);
-    /*
-    #ifdef TIMER
-        InitTimer();
-    #else
-        EnableAC();
-    #endif
-    */
-    #ifdef DEBUG_KEYPAD
-        Serial.println(F("Keypad initialized"));
-    #endif
     }
 }

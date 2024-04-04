@@ -2,7 +2,7 @@
  * File: ./Software.h
  * Requires: Keypad.h LCD.h NET.h Utils.h
  ******************************************************************************/
-#include <MusicPlayer.h>
+#include "include/MusicPlayer.h"
 
 namespace Software
 {
@@ -135,10 +135,8 @@ namespace Software
         Keypad::AttachKeyHandler(KEY(D),Summary);
         Keypad::AttachKeyHandler(KEY(STAR),WindDirection);
         Keypad::AttachKeyHandler(KEY(HASH),WindSpeed);
-        Keypad::AttachKeyHandler(KEY(5), MusicPlayer::playSong);
-    #endif
-    #ifdef DEBUG_SOFTWARE
-        Serial.println("Software initialized");
+
+        Keypad::AttachKeyHandler(KEY(5),MusicPlayer::playSong);
     #endif
         Bootmessage();
     }

@@ -57,10 +57,5 @@ namespace WindSpeed
             InterruptServiceRoutine,
             RISING
         );
-
-    #ifdef DEBUG_WINDSPEED
-        Serial.println(F("WindSpeed initialized"));
-    #endif
-        return;
     }
 }

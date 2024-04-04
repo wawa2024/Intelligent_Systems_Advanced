@@ -66,7 +66,9 @@ namespace MQTT
                 dtostrf(WindDirection::mean,-1,1,var1);
                 dtostrf(WindSpeed::mean,-1,1,var2);
                 sprintf(buf,"IOTJS={\"S_name1\": \"%s_WindDirection\", \"S_value1\": %s, \"S_name2\": \"%s_WindSpeed\", \"S_value2\": %s}",groupId,var1,groupId,var2);
+            #ifdef DEBUG
                 Debug();
+            #endif
                 client.publish(topic.out,buf);
             }
 
@@ -77,8 +79,5 @@ namespace MQTT
     inline void Init(void)
     {
         status = client.connect(groupId);
-    #ifdef DEBUG_MQTT
-        Serial.println(F("MQTT initialized"));
-    #endif
     }
 }

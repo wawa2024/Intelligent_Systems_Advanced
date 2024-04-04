@@ -65,11 +65,10 @@ namespace NET
     inline void Init(void)
     {
     #ifdef DHCP
-        if( Ethernet.begin(mac) ) {
+        if( Ethernet.begin(mac) )
             Serial.println(F("DHCP success"));
-        } else {
+        else
             Serial.println(F("DHCP failed"));
-        }
     #else
         Serial.println(F("DHCP off"));
         Ethernet.begin(
