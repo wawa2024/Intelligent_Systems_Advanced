@@ -20,11 +20,11 @@ namespace Software
     void Summary(void)
     {
         LCD::Clear();
-        LCD::Print(s_wd); LCD::Flush();
+        LCD::Print(s_wd); 
         LCD::SetCursor(0,1);
         LCD::Print(s_mean); LCD::Print( WindDirection::mean ); LCD::Print(s_deg);
         LCD::SetCursor(0,2);
-        LCD::Print(s_ws); LCD::Flush();
+        LCD::Print(s_ws);
         LCD::SetCursor(0,3);
         LCD::Print(s_mean); LCD::Print( WindSpeed::mean ); LCD::Print(s_mps);
     }
