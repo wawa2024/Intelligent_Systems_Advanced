@@ -4,8 +4,6 @@
  ******************************************************************************/
 #include <MusicPlayer.h>
 
-MusicPlayer musicPlayer();
-
 namespace Software
 {
     char s_wd[] = "WindDirection:"
@@ -134,7 +132,7 @@ namespace Software
         Keypad::AttachKeyHandler(KEY(D),Summary);
         Keypad::AttachKeyHandler(KEY(STAR),WindDirection);
         Keypad::AttachKeyHandler(KEY(HASH),WindSpeed);
-        Keypad::AttachKeyHandler(KEY(5), musicPlayer.playSong());
+        Keypad::AttachKeyHandler(KEY(5), MusicPlayer::playSong);
     #endif
     #ifdef DEBUG_SOFTWARE
         Serial.println("Software initialized");
