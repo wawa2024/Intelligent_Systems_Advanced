@@ -66,28 +66,35 @@ namespace Keypad
 
     void ScanKeys(void)
     {
+        static unsigned long t_begin = 0, t_end = 0;
         volatile float tmp = 0 , volt = 0;
 
-        for( uint8_t i=0 ; i < 100 ; i++ ) 
+        while( ( ( t_end = millis() ) - t_begin ) < seconds2millis(1) )
         {
-            tmp = Voltage(pin.input);
-            volt = tmp > volt ? tmp : volt ;
-        }
-
-        if( volt < 1 ) return;
-
-        for( uint8_t i=0 ; i < num_keys ; i++ )
-        {
-            const float& f = env.field[i];
-            volatile float low = f - env.offset, high = f + env.offset;
-            if( ( low < volt ) and ( volt < high ) )
-            { 
-                keycode = i + 1; 
-                break; 
+            for( uint8_t i=0 ; i < 100 ; i++ ) 
+            {
+                tmp = Voltage(pin.input);
+                volt = tmp > volt ? tmp : volt;
             }
+
+            if( volt < 1 ) continue;
+
+            for( uint8_t i = 0 ; i < num_keys ; i++ )
+            {
+                float low = env.field[i] - env.offset;
+                float high = env.field[i] + env.offset;
+
+                if( ( low < volt ) and ( volt < high ) )
+                { 
+                    keycode = i + 1; 
+                    break; 
+                }
+            }
+
+            voltage = volt;
         }
 
-        voltage = volt;
+        t_begin = t_end;
     }
 
     void Exec(void)
@@ -101,17 +108,18 @@ namespace Keypad
         }
     }
 
+/*
 #ifdef TIMER
-    #define USE_TIMER_1 true
+    #define USE_TIMER_2 true
     #include <TimerInterrupt.h>
 
     inline void InitTimer(void)
     {
-        ITimer1.init();
-        if( ITimer1.attachInterruptInterval( hz2millis(15) , ScanKeys ) )
-            Serial.println(F("ITimer1 ON")); 
+        ITimer2.init();
+        if( ITimer2.attachInterruptInterval( hz2millis(15) , ScanKeys ) )
+            Serial.println(F("ITimer2 ON")); 
         else
-            Serial.println(F("ITimer1 ERROR"));
+            Serial.println(F("ITimer2 ERROR"));
     }
 #else
     #include <avr/interrupt.h>
@@ -132,15 +140,17 @@ namespace Keypad
         ScanKeys(); 
     }
 #endif
-
+*/
     inline void Init(void)
     {
         pinMode(pin.input,INPUT);
+    /*
     #ifdef TIMER
         InitTimer();
     #else
         EnableAC();
     #endif
+    */
     #ifdef DEBUG_KEYPAD
         Serial.println(F("Keypad initialized"));
     #endif

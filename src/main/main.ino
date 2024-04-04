@@ -55,5 +55,5 @@ void loop()
     WindDirection::Update();
     WindSpeed::Update();
 
-    delay(seconds2millis(1));
+    Keypad::ScanKeys();
 }
