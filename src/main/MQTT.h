@@ -52,7 +52,7 @@ namespace MQTT
             if( not status )
             {
                 Serial.println(F("MQTT connecting..."));
-                if( client.connect(groupId) ) 
+                if( status = client.connect(groupId) ) 
                     Serial.println(F("MQTT connection established"));
                 else 
                     Serial.println(F("MQTT failed to connect"));
@@ -60,11 +60,8 @@ namespace MQTT
 
             if( status = client.connected() )
             {
+                sprintf(buf,"IOTJS={\"S_name1\": \"jlw_wd\", \"S_value1\": %d, \"S_name2\": \"jlw_ws\", \"S_value2\": %d}",WindDirection::mean, WindSpeed::mean);
                 Debug();
-                sprintf(buf,"IOTJS={\"S_name1\": \"%s_tsuunta\", \"S_value1\": %d}",groupId,WindDirection::mean);
-                client.publish(topic.out,buf);
-                Debug();
-                sprintf(buf,"IOTJS={\"S_name2\": \"%s_tnopeus\", \"S_value2\": %d}",groupId,WindSpeed::mean);
                 client.publish(topic.out,buf);
             }
 
@@ -74,6 +71,7 @@ namespace MQTT
 
     inline void Init(void)
     {
+        status = client.connect(groupId);
     #ifdef DEBUG_MQTT
         Serial.println(F("MQTT initialized"));
     #endif
