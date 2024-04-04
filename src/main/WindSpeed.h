@@ -22,7 +22,7 @@ namespace WindSpeed
         t_array[t_size] = {}
         ;
 
-    volatile int max = 0, mean = 0, min = 0;
+    volatile float max = 0, mean = 0, min = 0;
 
     void InterruptServiceRoutine(void)
     {
@@ -49,13 +49,13 @@ namespace WindSpeed
            t_min = t_min > tmp ? tmp : t_min;
         }
 
-        mean = round2int( sum / t_size );
+        mean = sum / t_size;
         max = t_max;
         min = t_min;
 
     }
 
-    inline int Value(void) { return mean; }
+    inline float Value(void) { return mean; }
 
     inline void Init(void)
     {

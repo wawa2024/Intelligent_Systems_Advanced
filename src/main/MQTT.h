@@ -12,7 +12,10 @@ namespace MQTT
     uint8_t ip [4] = { 10,6,0,21 };
     bool status = false;
 
-    char buf[256] = {};
+    char buf[128] = {}
+        , var1[16] = {}
+        , var2[16] = {}
+        ;
 
     struct {
         char* in = "ICT4_in_2020";
@@ -60,7 +63,9 @@ namespace MQTT
 
             if( status = client.connected() )
             {
-                sprintf(buf,"IOTJS={\"S_name1\": \"jlw_wd\", \"S_value1\": %d, \"S_name2\": \"jlw_ws\", \"S_value2\": %d}",WindDirection::mean, WindSpeed::mean);
+                dtostrf(WindDirection::mean,-1,1,var1);
+                dtostrf(WindSpeed::mean,-1,1,var2);
+                sprintf(buf,"IOTJS={\"S_name1\": \"%s_WindDirection\", \"S_value1\": %s, \"S_name2\": \"%s_WindSpeed\", \"S_value2\": %s}",groupId,var1,groupId,var2);
                 Debug();
                 client.publish(topic.out,buf);
             }
