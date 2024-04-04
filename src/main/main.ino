@@ -30,6 +30,7 @@ void setup()
 
 #ifdef NET
     NET::Init();
+    MQTT::Init();
 #endif
 
     WindSpeed::Init();
