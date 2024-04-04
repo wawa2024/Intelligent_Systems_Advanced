@@ -1,8 +1,10 @@
+#ifndef MusicPlayer_h
+#define MusicPlayer_h
+
 namespace MusicPlayer {
   #include "Arduino.h"
   #include "Song.h"
   #include "Pitches.h"
-  #include "MusicPlayer.h"
 
   uint8_t pin = 6;
   uint32_t whole_note = 4*60/100*1000;
@@ -41,3 +43,5 @@ namespace MusicPlayer {
     previousMillis = millis();
   }
 }
+
+#endif
