@@ -16,6 +16,7 @@ namespace LCD
     LiquidCrystal* lcd = 0;
 
     template<typename T> inline void Print(T a){ lcd -> print(a); }
+    inline void Print(float a, uint8_t i){ lcd -> print(a,i); }
     inline void Clear() { lcd -> clear(); }
     inline void SetCursor(int col,int row){ lcd -> setCursor(col,row); }
     inline void Write(uint8_t c){ lcd -> write(c); }

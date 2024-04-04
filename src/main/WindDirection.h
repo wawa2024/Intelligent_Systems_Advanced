@@ -9,7 +9,7 @@ namespace WindDirection
     const uint8_t t_size = 10;
     float t_array[t_size] = {};
 
-    volatile int max = 0 , mean = 0 , min = 1000;
+    volatile float max = 0 , mean = 0 , min = 1000;
 
     void Push(float x)
     {
@@ -31,10 +31,7 @@ namespace WindDirection
     void Fill(void)
     {
         for( uint8_t i=0 ; i < t_size ; i++)
-        {
             Push( Calculate() );
-            delay(seconds2millis(1));
-        }
         return;
     }
 
@@ -42,7 +39,7 @@ namespace WindDirection
     {
         float sum = 0, t_min = 1000, t_max = 0;
 
-        Push( Calculate() );
+        Fill();
 
         for( uint8_t i=0 ; i < t_size ; i++ )
         {
@@ -53,7 +50,7 @@ namespace WindDirection
             t_max = t_max < tmp ? tmp : t_max;
         }
 
-        mean = round2int( sum / t_size );
+        mean = sum / t_size;
         max = t_max;
         min = t_min;
 

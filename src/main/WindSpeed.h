@@ -4,25 +4,13 @@
  ******************************************************************************/
 namespace WindSpeed
 {
-    constexpr struct 
-    {
-        uint8_t
-            input=      2
-            ;
-    } pin ;
+    constexpr struct { uint8_t input = 2; } pin;
+    constexpr uint8_t t_size = 10;
+    volatile unsigned long t_begin = 0, t_end = 0;
+    volatile unsigned long t_array[t_size] = {};
 
-    constexpr uint8_t 
-        t_size=     10
-        ;
-    volatile unsigned long
-        t_begin=    0,
-        t_end=      0
-        ;
-    volatile unsigned long
-        t_array[t_size] = {}
-        ;
-
-    volatile int max = 0, mean = 0, min = 0;
+    volatile float max = 0, mean = 0, min = 0;
+    volatile bool flag = 0;
 
     void InterruptServiceRoutine(void)
     {
@@ -34,6 +22,8 @@ namespace WindSpeed
         i = i < t_size ? i : 0;
 
         t_array[i++] = t_end - t_begin;
+
+        flag = true;
     }
 
     void Update(void)
@@ -49,13 +39,15 @@ namespace WindSpeed
            t_min = t_min > tmp ? tmp : t_min;
         }
 
-        mean = round2int( sum / t_size );
-        max = t_max;
-        min = t_min;
+        mean =  flag ? sum / t_size : 0;
+        max =   flag ? t_max : 0;
+        min =   flag ? t_min : 0;
+
+        flag = false;
 
     }
 
-    inline int Value(void) { return mean; }
+    inline float Value(void) { return mean; }
 
     inline void Init(void)
     {

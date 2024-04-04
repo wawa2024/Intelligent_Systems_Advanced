@@ -20,11 +20,14 @@ namespace Software
         LCD::Clear();
         LCD::Print(s_wd); 
         LCD::SetCursor(0,1);
-        LCD::Print(s_mean); LCD::Print( WindDirection::mean ); LCD::Print(s_deg);
+        LCD::Print(s_mean); 
+        LCD::Print(WindDirection::mean,1); LCD::Print(s_deg);
         LCD::SetCursor(0,2);
         LCD::Print(s_ws);
         LCD::SetCursor(0,3);
-        LCD::Print(s_mean); LCD::Print( WindSpeed::mean ); LCD::Print(s_mps);
+        LCD::Print(s_mean); 
+        LCD::Print(WindSpeed::mean,1); 
+        LCD::Print(s_mps);
     }
 
     void Template(char* s, int max, int mean, int min, char* unit)
@@ -32,11 +35,11 @@ namespace Software
         LCD::Clear();
         LCD::Print(s);
         LCD::SetCursor(0,1);
-        LCD::Print(s_max); LCD::Print( max ); LCD::Print(unit);
+        LCD::Print(s_max); LCD::Print( max,1 ); LCD::Print(unit);
         LCD::SetCursor(0,2);
-        LCD::Print(s_mean); LCD::Print( mean ); LCD::Print(unit);
+        LCD::Print(s_mean); LCD::Print( mean,1 ); LCD::Print(unit);
         LCD::SetCursor(0,3);
-        LCD::Print(s_min); LCD::Print( min ); LCD::Print(unit);
+        LCD::Print(s_min); LCD::Print( min,1 ); LCD::Print(unit);
     }
 
     void WindDirection(void)
