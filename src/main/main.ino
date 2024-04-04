@@ -5,7 +5,6 @@
 #define NET
 #define KEYPAD
 
-#include "IO.h"
 #include "Utils.h"
 
 #include "COM.h"
