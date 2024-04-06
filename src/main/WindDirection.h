@@ -32,7 +32,6 @@ namespace WindDirection
     {
         for( uint8_t i=0 ; i < t_size ; i++)
             Push( Calculate() );
-        return;
     }
 
     void Update(void)

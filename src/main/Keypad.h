@@ -4,9 +4,9 @@
  ******************************************************************************/
 namespace Keypad
 {
-    constexpr uint8_t num_keys = 4 * 4, bus_size = 1;
+    constexpr uint8_t num_keys = 4 * 4, bus_size = 1, defkey = 14;
 
-    volatile uint8_t keycode = 14;
+    volatile uint8_t keycode = defkey;
     volatile float voltage = 0.0;
 
     constexpr struct { uint8_t input = A6; } pin;
@@ -53,6 +53,11 @@ namespace Keypad
     inline void AttachKeyHandler( uint8_t i, void(*p)(void) ) 
     {
         key[i].handler=p;
+    }
+
+    inline void Default(void)
+    {
+        keycode = defkey;
     }
 
 #ifdef DEBUG_KEYPAD

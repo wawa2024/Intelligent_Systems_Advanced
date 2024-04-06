@@ -109,13 +109,25 @@ namespace Software
     void Bootmessage(void)
     {
         LCD::Clear();
-        LCD::Print("ARDUINO BOOT ONLINE");
+        LCD::Print(F("ARDUINO BOOT ONLINE"));
     }
 
     void Default(void)
     {
         LCD::Clear();
         LCD::Print("Unmapped key");
+    }
+
+    void Playlist(void)
+    {
+        LCD::Clear();
+        LCD::Print("Music Playlist ON");
+        LCD::SetCursor(0,1);
+        LCD::Print("playlist: ");
+        LCD::SetCursor(0,2);
+        LCD::Print("* lamb of god intro");
+        MusicPlayer::playSong();
+        Keypad::Default();
     }
 
     inline void Init(void)
@@ -132,7 +144,7 @@ namespace Software
         Keypad::AttachKeyHandler(KEY(STAR),WindDirection);
         Keypad::AttachKeyHandler(KEY(HASH),WindSpeed);
 
-        Keypad::AttachKeyHandler(KEY(5),MusicPlayer::playSong);
+        Keypad::AttachKeyHandler(KEY(5),Playlist);
     #endif
         Bootmessage();
         Wait(3);
