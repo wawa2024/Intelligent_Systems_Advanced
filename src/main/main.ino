@@ -1,12 +1,14 @@
 /******************************************************************************
  * File: ./main.ino
  ******************************************************************************/
+#include <avr/interrupt.h>
+
 #define DHCP
 #define NET
 #define KEYPAD
+#define DEBUG_MQTT
 
 #include "Utils.h"
-
 #include "COM.h"
 #include "LCD.h"
 #include "WindDirection.h"
@@ -40,20 +42,20 @@ void setup()
     Keypad::Init();
     Software::Init();
 #endif
-
-    Wait(3);
 }
 
 void loop()
 {
-#ifdef NET
-    MQTT::POST(); 
-#endif
-#ifdef KEYPAD
-    Keypad::Exec(); 
-#endif 
     WindDirection::Update();
     WindSpeed::Update();
 
-    Keypad::ScanKeys();
+#ifdef NET
+    MQTT::POST(); 
+#endif
+
+#ifdef KEYPAD
+    Keypad::Exec(); 
+#endif 
+
+    delay(seconds2millis(1));
 }

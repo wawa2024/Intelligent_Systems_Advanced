@@ -12,20 +12,6 @@ namespace WindSpeed
     volatile float max = 0, mean = 0, min = 0;
     volatile bool flag = 0;
 
-    void InterruptServiceRoutine(void)
-    {
-        static volatile char i = 0;
-
-        t_begin = t_end;
-        t_end = millis();
-
-        i = i < t_size ? i : 0;
-
-        t_array[i++] = t_end - t_begin;
-
-        flag = true;
-    }
-
     void Update(void)
     {
         float sum = 0, t_max = 0 , t_min = 1000, tmp = 0;
@@ -44,18 +30,26 @@ namespace WindSpeed
         min =   flag ? t_min : 0;
 
         flag = false;
-
     }
 
-    inline float Value(void) { return mean; }
+    ISR(PCINT0_vect)
+    {
+        static volatile uint8_t i = 0;
+
+        t_begin = t_end;
+        t_end = millis();
+
+        i = i < t_size ? i : 0;
+
+        t_array[i++] = t_end - t_begin;
+
+        flag = true;
+    }
 
     inline void Init(void)
     {
-        pinMode(pin.input,INPUT);
-        attachInterrupt(
-            digitalPinToInterrupt(pin.input),
-            InterruptServiceRoutine,
-            RISING
-        );
+        DDRD and_eq compl ( 1 << pin.input );
+        EICRA or_eq 3;
+        EIMSK or_eq 1;
     }
 }

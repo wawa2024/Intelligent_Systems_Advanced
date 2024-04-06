@@ -35,11 +35,11 @@ namespace Software
         LCD::Clear();
         LCD::Print(s);
         LCD::SetCursor(0,1);
-        LCD::Print(s_max); LCD::Print( max,1 ); LCD::Print(unit);
+        LCD::Print(s_max); LCD::Print(max,1); LCD::Print(unit);
         LCD::SetCursor(0,2);
-        LCD::Print(s_mean); LCD::Print( mean,1 ); LCD::Print(unit);
+        LCD::Print(s_mean); LCD::Print(mean,1); LCD::Print(unit);
         LCD::SetCursor(0,3);
-        LCD::Print(s_min); LCD::Print( min,1 ); LCD::Print(unit);
+        LCD::Print(s_min); LCD::Print(min,1); LCD::Print(unit);
     }
 
     void WindDirection(void)
@@ -85,14 +85,10 @@ namespace Software
         LCD::SetCursor(0,2);
         LCD::Print("MAC ");     LCD::Print(NET::mac2string());
         LCD::SetCursor(0,3);
-    #ifdef NET
     #ifdef DHCP
         LCD::Print("DHCP ON");
     #else
         LCD::Print("DHCP OFF");
-    #endif
-    #else
-
     #endif
     }
 
@@ -139,5 +135,6 @@ namespace Software
         Keypad::AttachKeyHandler(KEY(5),MusicPlayer::playSong);
     #endif
         Bootmessage();
+        Wait(3);
     }
 }

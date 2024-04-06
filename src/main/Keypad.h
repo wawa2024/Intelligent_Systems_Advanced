@@ -22,14 +22,14 @@ namespace Keypad
     } env;
 
     struct Key { 
-    #ifdef DEBUG
+    #ifdef DEBUG_KEYPAD
         const char* name; 
     #endif
         void (*handler)(void); 
     };
 
     Key key[16] = {
-    #ifdef DEBUG
+    #ifdef DEBUG_KEYPAD
         { "*" , NULL },
         { "7" , NULL },
         { "4" , NULL },
@@ -66,35 +66,43 @@ namespace Keypad
 
     void ScanKeys(void)
     {
-        static unsigned long t_begin = 0, t_end = 0;
         volatile float tmp = 0 , volt = 0;
 
-        while( ( ( t_end = millis() ) - t_begin ) < seconds2millis(1) )
+        for( uint8_t i = 0 ; i < 100 ; i++ ) 
         {
-            for( uint8_t i=0 ; i < 100 ; i++ ) 
-            {
-                tmp = Voltage(pin.input);
-                volt = tmp > volt ? tmp : volt;
-            }
-
-            if( volt < 1 ) continue;
-
-            for( uint8_t i = 0 ; i < num_keys ; i++ )
-            {
-                float low = env.field[i] - env.offset;
-                float high = env.field[i] + env.offset;
-
-                if( ( low < volt ) and ( volt < high ) )
-                { 
-                    keycode = i + 1; 
-                    break; 
-                }
-            }
-
-            voltage = volt;
+            tmp = Voltage(pin.input);
+            volt = tmp > volt ? tmp : volt;
         }
 
-        t_begin = t_end;
+        if( volt < 1 ) return;
+
+        for( uint8_t i = 0 ; i < num_keys ; i++ )
+        {
+            tmp = env.field[i];
+
+            float low = tmp - env.offset;
+            float high = tmp + env.offset;
+
+            if( ( low < volt ) and ( volt < high ) )
+            { 
+                keycode = i + 1; 
+                break; 
+            }
+        }
+
+        voltage = volt;
+    }
+
+    inline void EnableAC(void)
+    { 
+        ACSR = 0b01000000; 
+        Wait(1);
+        ACSR|= 0b00001000;
+    }
+
+    ISR(ANALOG_COMP_vect)
+    {
+        ScanKeys(); 
     }
 
     void Exec(void)
@@ -111,5 +119,6 @@ namespace Keypad
     inline void Init(void)
     {
         pinMode(pin.input,INPUT);
+        EnableAC();
     }
 }

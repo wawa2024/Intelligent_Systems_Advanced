@@ -1,7 +1,5 @@
 #include "Pitches.h"
 
-struct Note;
-
 struct Note {
   uint16_t frequency;
   float division;

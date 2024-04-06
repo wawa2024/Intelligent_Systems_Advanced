@@ -53,14 +53,10 @@ namespace WindDirection
         mean = sum / t_size;
         max = t_max;
         min = t_min;
-
     }
-
-    inline int Value(void) { return mean; }
 
     inline void Init(void)
     {
-        pinMode(pin.input,INPUT);
         Fill();
     }
 }

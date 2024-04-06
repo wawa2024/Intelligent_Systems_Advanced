@@ -18,16 +18,16 @@ namespace MQTT
         ;
 
     struct {
-        char* in = "ICT4_in_2020";
-        char* out = "ICT4_out_2020";
+        const char* in = "ICT4_in_2020";
+        const char* out = "ICT4_out_2020";
     } topic ;
 
-    char* groupId = "jrmlwwk2024";
+    const char* groupId = "jrmlwwk2024";
 
     EthernetClient interface;
     PubSubClient client( ip, port, interface );
 
-    char* Checkup(void)
+    const char* Checkup(void)
     {
         return status ? "CONNECTED" : "DISCONNECTED" ;
     }
@@ -55,7 +55,7 @@ namespace MQTT
             if( not status )
             {
                 Serial.println(F("MQTT connecting..."));
-                if( status = client.connect(groupId) ) 
+                if( client.connect(groupId) ) 
                     Serial.println(F("MQTT connection established"));
                 else 
                     Serial.println(F("MQTT failed to connect"));
@@ -66,7 +66,7 @@ namespace MQTT
                 dtostrf(WindDirection::mean,-1,1,var1);
                 dtostrf(WindSpeed::mean,-1,1,var2);
                 sprintf(buf,"IOTJS={\"S_name1\": \"%s_WindDirection\", \"S_value1\": %s, \"S_name2\": \"%s_WindSpeed\", \"S_value2\": %s}",groupId,var1,groupId,var2);
-            #ifdef DEBUG
+            #ifdef DEBUG_MQTT
                 Debug();
             #endif
                 client.publish(topic.out,buf);

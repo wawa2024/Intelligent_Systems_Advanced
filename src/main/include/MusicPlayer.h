@@ -1,7 +1,6 @@
 namespace MusicPlayer 
 {
   #include "Song.h"
-  #include "Pitches.h"
 
   uint8_t pin = 6;
   uint32_t whole_note = 4*60/100*1000;
@@ -27,13 +26,13 @@ namespace MusicPlayer
 
   void playSong() {
     setTempo(grace[0].frequency);
-    uint16_t repetitions = grace[0].repetitions;
+    uint8_t repetitions = grace[0].repetitions;
     size_t song_length = sizeof(grace) / sizeof(Note);
 
-    for (int times_played = 0; times_played < repetitions; times_played++) {
-      for (int note_index = 1; note_index < song_length; note_index++) {
+    for (uint8_t times_played = 0; times_played < repetitions; times_played++) {
+      for (size_t note_index = 1; note_index < song_length; note_index++) {
         // 0 index used for metadata ^
-        for (int repeat_note = 0; repeat_note < grace[note_index].repetitions; repeat_note++) {
+        for (uint8_t repeat_note = 0; repeat_note < grace[note_index].repetitions; repeat_note++) {
           playNote(pin, grace[note_index].frequency, grace[note_index].division);
         }
       }
