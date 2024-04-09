@@ -2,58 +2,57 @@
  * File: ./WindSpeed.h
  * Requires: Utils.h
  ******************************************************************************/
+#include <TimerOne.h>
+
 namespace WindSpeed
 {
     constexpr struct { uint8_t input = 2; } pin;
+
     constexpr uint8_t t_size = 10;
-    volatile unsigned long t_begin = 0, t_end = 0;
-    volatile unsigned long t_array[t_size] = {};
+    volatile uint16_t spins = 0;
+    volatile uint16_t t_array[t_size] = {};
 
     volatile float max = 0, mean = 0, min = 0;
-    volatile bool flag = 0;
 
-    void InterruptServiceRoutine(void)
+    void InterruptServiceRoutine0(void)
     {
-        static volatile char i = 0;
+        spins++;
+    }
 
-        t_begin = t_end;
-        t_end = millis();
-
-        i = i < t_size ? i : 0;
-
-        t_array[i++] = t_end - t_begin;
-
-        flag = true;
+    void InterruptServiceRoutine1(void)
+    {
+        static uint8_t i = 0;
+        i = i < 10 ? i : 0;
+        t_array[i] = spins;
+        spins = 0;
+        i++;
     }
 
     void Update(void)
     {
-        float sum = 0, t_max = 0 , t_min = 1000, tmp = 0;
+        uint16_t sum = 0, t_max = 0 , t_min = 0xffff;
 
         for(int i=0 ; i < t_size ; i++)
         {
-           sum += tmp = millis2hz(t_array[i]) * 0.699 ;
-           sum -= sum > 0 ? 0.24 : 0 ;
-
+           uint16_t tmp = t_array[i];
+           sum += tmp;
            t_max = t_max < tmp ? tmp : t_max;
-           t_min = t_min > tmp ? tmp : t_min;
+           t_min = t_min > tmp ? tmp : t_max;
         }
 
-        mean =  flag ? sum / t_size : 0;
-        max =   flag ? t_max : 0;
-        min =   flag ? t_min : 0;
-
-        flag = false;
-
+        mean    = sum / t_size * 0.699;
+        max     = t_max        * 0.699;
+        min     = t_min        * 0.699;
     }
 
     inline void Init(void)
     {
         pinMode(pin.input,INPUT);
-        attachInterrupt(
-            digitalPinToInterrupt(pin.input),
-            InterruptServiceRoutine,
-            RISING
-        );
+        attachInterrupt( digitalPinToInterrupt(pin.input)
+            , InterruptServiceRoutine0
+            , RISING
+            );
+        Timer1.initialize(1000000);
+        Timer1.attachInterrupt(InterruptServiceRoutine1);
     }
 }

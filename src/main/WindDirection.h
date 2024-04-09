@@ -4,12 +4,12 @@
  ******************************************************************************/
 namespace WindDirection 
 {
-    struct { uint8_t input = A7; } pin;
+    constexpr struct { uint8_t input = A7; } pin;
 
-    const uint8_t t_size = 10;
+    constexpr uint8_t t_size = 10;
     float t_array[t_size] = {};
 
-    volatile float max = 0 , mean = 0 , min = 1000;
+    volatile float max = 0 , mean = 0 , min = 0; 
 
     float mapd(float x, float in_min, float in_max, float out_min, float out_max)
     {     
@@ -42,9 +42,9 @@ namespace WindDirection
             t_max = t_max < tmp ? tmp : t_max;
         }
 
-        mean = sum / t_size;
-        max = t_max;
-        min = t_min;
+        mean = sum / t_size - 0.24;
+        max = t_max         - 0.24;
+        min = t_min         - 0.24;
 
     }
 

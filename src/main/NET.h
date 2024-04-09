@@ -14,20 +14,10 @@ namespace NET
             gw{192,168,0,1},
             subnet{255,255,255,0};
 
-    char bin2hex(char c,int i)
-    { 
-        uint8_t mask = 0b1111; mask = ( i ? compl mask : mask );
-        char val = ( c & mask ) >> i;
-        return val > 9 ? 87 + val : 48 + val;
-    }
-
     char* mac2string(void)
     {
-        static char s[13] = {};
-        for( uint8_t j = 0, i = 0 ; i < sizeof(mac) ; i++ ) 
-            for(uint8_t k = 0 ; k <= 4; k += 4) 
-                s[j++] = bin2hex(mac[i],k);
-        return s;
+        sprintf(buf,"%02x%02x%02x%02x%02x%02x",mac[0],mac[1],mac[2],mac[3],mac[4],mac[5]);
+        return buf;
     }
 
     namespace Status 
@@ -79,6 +69,5 @@ namespace NET
                         subnet
                         );
     #endif
-        Update::IP();
     }
 }

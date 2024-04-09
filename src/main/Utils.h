@@ -32,5 +32,3 @@
 float Voltage(uint8_t PIN) { 
     return (float)analogRead(PIN) * (float)ref_voltage / (float)Max_ADC_Ret;
 }
-
-void Wait(uint16_t t){ delay(seconds2millis(t)); }

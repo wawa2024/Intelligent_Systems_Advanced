@@ -4,26 +4,26 @@
  ******************************************************************************/
 namespace Keypad
 {
-    constexpr uint8_t num_keys = 4 * 4, bus_size = 1, def_key = 14;
+    constexpr uint8_t num_keys = 4 * 4, bus_size = 1, def_key = KEY(A);
 
     volatile uint8_t keycode = def_key;
     void Default(void) { keycode = def_key; }
 
-    volatile float voltage = 0.0;
 
     constexpr struct { uint8_t input = A6; } pin;
 
-    constexpr struct {
-        float field[num_keys] = {
-                      1.30  ,  1.50  ,  1.70  ,  1.90,
-                      2.07  ,  2.30  ,  2.53  ,  2.77,
-                      2.96  ,  3.22  ,  3.49  ,  3.77,
-                      4.01  ,  4.32  ,  4.65  ,  5.00
+    struct {
+        uint16_t field[num_keys] = {
+                      130  ,  150  ,  170  ,  190,
+                      207  ,  230  ,  253  ,  277,
+                      296  ,  322  ,  349  ,  377,
+                      401  ,  432  ,  465  ,  500
             };
-        float offset = 0.07; 
+        uint8_t offset = 007; 
     } env;
 
 #ifdef DEBUG_KEYPAD
+    volatile float voltage = 0.0;
     void Debug(void)
     {
         Serial.print(F("Voltage = ")); Serial.print( voltage ); 
@@ -34,39 +34,34 @@ namespace Keypad
 
     void ScanKeys(void)
     {
-        static unsigned long t_begin = 0, t_end = 0;
         volatile float tmp = 0 , volt = 0;
 
-    #ifdef DEBUG
-        Debug();
-    #endif
-
-        while( ( ( t_end = millis() ) - t_begin ) < seconds2millis(1) )
+        for( uint8_t i=0 ; i < 100 ; i++ ) 
         {
-            for( uint8_t i=0 ; i < 100 ; i++ ) 
-            {
-                tmp = Voltage(pin.input);
-                volt = tmp > volt ? tmp : volt;
-            }
-
-            if( volt < 1 ) continue;
-
-            for( uint8_t i = 0 ; i < num_keys ; i++ )
-            {
-                float low = env.field[i] - env.offset;
-                float high = env.field[i] + env.offset;
-
-                if( ( low < volt ) and ( volt < high ) )
-                { 
-                    keycode = i + 1; 
-                    break; 
-                }
-            }
-
-            voltage = volt;
+            tmp = Voltage(pin.input);
+            volt = tmp > volt ? tmp : volt;
         }
 
-        t_begin = t_end;
+        if( volt < 1 ) return;
+
+        for( uint8_t i = 0 ; i < num_keys ; i++ )
+        {
+            uint16_t& tmp  = env.field[i];
+            uint16_t  val  = volt * 100;
+            uint16_t  low  = tmp - env.offset;
+            uint16_t  high = tmp + env.offset;
+
+            if( ( low < val ) and ( val < high ) )
+            { 
+                keycode = i + 1; 
+                break; 
+            }
+        }
+
+    #ifdef DEBUG_KEYPAD
+        voltage = volt;
+        Debug();
+    #endif
     }
 
     inline void Init(void)

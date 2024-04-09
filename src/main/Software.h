@@ -95,7 +95,7 @@ namespace Software
 
     #endif
     }
-
+    
     void MQTTstats(void)
     {
         NET::Update::IP();
@@ -124,6 +124,8 @@ namespace Software
 
     void Playlist(void)
     {
+        LCD::Clear();
+        LCD::Print(F("Playing Music~"));
         MusicPlayer::playSong();
         Keypad::Default();
     }

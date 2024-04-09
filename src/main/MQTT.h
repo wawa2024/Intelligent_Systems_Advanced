@@ -12,15 +12,7 @@ namespace MQTT
     uint8_t ip [4] = { 10,6,0,21 };
     bool status = false;
 
-    char buf[128] = {}
-        , var1[16] = {}
-        , var2[16] = {}
-        ;
-
-    struct {
-        char* in = "ICT4_in_2020";
-        char* out = "ICT4_out_2020";
-    } topic ;
+    struct { char* out = "ICT4_out_2020"; } topic ;
 
     char* groupId = "jrmlwwk2024";
 
@@ -32,6 +24,7 @@ namespace MQTT
         return status ? "CONNECTED" : "DISCONNECTED" ;
     }
 
+    #ifdef DEBUG
     void Debug(void)
     {
         static char s_dot[] = ".";
@@ -45,6 +38,7 @@ namespace MQTT
         Serial.print(F(": MQTT package, "));
         Serial.println(buf);
     }
+    #endif
 
     void POST(void)
     {
@@ -55,7 +49,7 @@ namespace MQTT
             if( not status )
             {
                 Serial.println(F("MQTT connecting..."));
-                if( status = client.connect(groupId) ) 
+                if( client.connect(groupId) ) 
                     Serial.println(F("MQTT connection established"));
                 else 
                     Serial.println(F("MQTT failed to connect"));
@@ -63,12 +57,14 @@ namespace MQTT
 
             if( status = client.connected() )
             {
-                dtostrf(WindDirection::mean,-1,1,var1);
-                dtostrf(WindSpeed::mean,-1,1,var2);
+                dtostrf(WindDirection::mean,6,1,var1);
+                dtostrf(WindSpeed::mean,6,1,var2);
                 sprintf(buf,"IOTJS={\"S_name1\": \"%s_WindDirection\", \"S_value1\": %s, \"S_name2\": \"%s_WindSpeed\", \"S_value2\": %s}",groupId,var1,groupId,var2);
+
             #ifdef DEBUG
                 Debug();
             #endif
+
                 client.publish(topic.out,buf);
             }
 

@@ -6,6 +6,7 @@
 #define KEYPAD
 
 #include "Utils.h"
+#include "IO.h"
 
 #include "COM.h"
 #include "LCD.h"
@@ -33,27 +34,29 @@ void setup()
     MQTT::Init();
 #endif
 
+    WindSpeed::Init();
+    WindDirection::Init();
+
 #ifdef KEYPAD
     Keypad::Init();
     Software::Init();
 #endif
 
-    WindSpeed::Init();
-    WindDirection::Init();
-
-    Wait(3);
+    delay(3000);
 }
 
 void loop()
 {
 #ifdef NET
+#ifdef MQTT
     MQTT::POST(); 
 #endif
-
-    Software::Exec(); 
+#endif
 
     WindDirection::Update();
     WindSpeed::Update();
 
+    Software::Exec(); 
     Keypad::ScanKeys();
+    delay(1000);
 }
