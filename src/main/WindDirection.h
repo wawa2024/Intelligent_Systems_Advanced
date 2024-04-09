@@ -11,13 +11,6 @@ namespace WindDirection
 
     volatile float max = 0 , mean = 0 , min = 1000;
 
-    void Push(float x)
-    {
-        static uint8_t i = 0;
-        i = i < 10 ? i : 0;
-        t_array[i++] = x;
-    }
-
     float mapd(float x, float in_min, float in_max, float out_min, float out_max)
     {     
         return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min; 
@@ -31,8 +24,7 @@ namespace WindDirection
     void Fill(void)
     {
         for( uint8_t i=0 ; i < t_size ; i++)
-            Push( Calculate() );
-        return;
+            t_array[i] = Calculate();
     }
 
     void Update(void)
@@ -55,8 +47,6 @@ namespace WindDirection
         min = t_min;
 
     }
-
-    inline int Value(void) { return mean; }
 
     inline void Init(void)
     {

@@ -4,9 +4,11 @@
  ******************************************************************************/
 namespace Keypad
 {
-    constexpr uint8_t num_keys = 4 * 4, bus_size = 1;
+    constexpr uint8_t num_keys = 4 * 4, bus_size = 1, def_key = 14;
 
-    volatile uint8_t keycode = 14;
+    volatile uint8_t keycode = def_key;
+    void Default(void) { keycode = def_key; }
+
     volatile float voltage = 0.0;
 
     constexpr struct { uint8_t input = A6; } pin;
@@ -21,40 +23,6 @@ namespace Keypad
         float offset = 0.07; 
     } env;
 
-    struct Key { 
-    #ifdef DEBUG
-        const char* name; 
-    #endif
-        void (*handler)(void); 
-    };
-
-    Key key[16] = {
-    #ifdef DEBUG
-        { "*" , NULL },
-        { "7" , NULL },
-        { "4" , NULL },
-        { "1" , NULL },
-        { "0" , NULL },
-        { "8" , NULL },
-        { "5" , NULL },
-        { "2" , NULL },
-        { "#" , NULL },
-        { "9" , NULL },
-        { "6" , NULL },
-        { "3" , NULL },
-        { "D" , NULL },
-        { "C" , NULL },
-        { "B" , NULL },
-        { "A" , NULL }
-    #else
-    #endif
-    };
-
-    inline void AttachKeyHandler( uint8_t i, void(*p)(void) ) 
-    {
-        key[i].handler=p;
-    }
-
 #ifdef DEBUG_KEYPAD
     void Debug(void)
     {
@@ -68,6 +36,10 @@ namespace Keypad
     {
         static unsigned long t_begin = 0, t_end = 0;
         volatile float tmp = 0 , volt = 0;
+
+    #ifdef DEBUG
+        Debug();
+    #endif
 
         while( ( ( t_end = millis() ) - t_begin ) < seconds2millis(1) )
         {
@@ -95,17 +67,6 @@ namespace Keypad
         }
 
         t_begin = t_end;
-    }
-
-    void Exec(void)
-    {
-        if(keycode)
-        {
-        #ifdef DEBUG_KEYPAD
-            Debug();
-        #endif
-            key[keycode-1].handler();
-        }
     }
 
     inline void Init(void)

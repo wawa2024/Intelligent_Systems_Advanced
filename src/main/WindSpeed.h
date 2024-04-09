@@ -47,8 +47,6 @@ namespace WindSpeed
 
     }
 
-    inline float Value(void) { return mean; }
-
     inline void Init(void)
     {
         pinMode(pin.input,INPUT);

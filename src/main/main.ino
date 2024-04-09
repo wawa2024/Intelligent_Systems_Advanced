@@ -33,13 +33,13 @@ void setup()
     MQTT::Init();
 #endif
 
-    WindSpeed::Init();
-    WindDirection::Init();
-
 #ifdef KEYPAD
     Keypad::Init();
     Software::Init();
 #endif
+
+    WindSpeed::Init();
+    WindDirection::Init();
 
     Wait(3);
 }
@@ -49,9 +49,9 @@ void loop()
 #ifdef NET
     MQTT::POST(); 
 #endif
-#ifdef KEYPAD
-    Keypad::Exec(); 
-#endif 
+
+    Software::Exec(); 
+
     WindDirection::Update();
     WindSpeed::Update();
 

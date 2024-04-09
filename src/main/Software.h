@@ -30,7 +30,7 @@ namespace Software
         LCD::Print(s_mps);
     }
 
-    void Template(char* s, int max, int mean, int min, char* unit)
+    void Template(char* s, float max, float mean, float min, char* unit)
     {
         LCD::Clear();
         LCD::Print(s);
@@ -67,13 +67,13 @@ namespace Software
     {
         NET::Update::IP();
         LCD::Clear();
-        LCD::Print("IP ");     LCD::Print(NET::ip);
+        LCD::Print(F("IP "));     LCD::Print(NET::ip);
         LCD::SetCursor(0,1);    
-        LCD::Print("GW ");     LCD::Print(NET::gw);
+        LCD::Print(F("GW "));     LCD::Print(NET::gw);
         LCD::SetCursor(0,2);
-        LCD::Print("DNS ");    LCD::Print(NET::dns);
+        LCD::Print(F("DNS "));    LCD::Print(NET::dns);
         LCD::SetCursor(0,3);
-        LCD::Print("MASK ");   LCD::Print(NET::subnet);
+        LCD::Print(F("MASK "));   LCD::Print(NET::subnet);
     }
 
     void HWstats(void)
@@ -83,13 +83,13 @@ namespace Software
         LCD::SetCursor(0,1);
         LCD::Print( NET::Status::Link() );
         LCD::SetCursor(0,2);
-        LCD::Print("MAC ");     LCD::Print(NET::mac2string());
+        LCD::Print(F("MAC "));     LCD::Print(NET::mac2string());
         LCD::SetCursor(0,3);
     #ifdef NET
     #ifdef DHCP
-        LCD::Print("DHCP ON");
+        LCD::Print(F("DHCP ON"));
     #else
-        LCD::Print("DHCP OFF");
+        LCD::Print(F("DHCP OFF"));
     #endif
     #else
 
@@ -100,44 +100,53 @@ namespace Software
     {
         NET::Update::IP();
         LCD::Clear();
-        LCD::Print("MQTT ");    LCD::Print(MQTT::Checkup());
+        LCD::Print(F("MQTT "));    LCD::Print(MQTT::Checkup());
         LCD::SetCursor(0,1);    
-        LCD::Print("HOST ");    LCD::Print(MQTT::IP);
+        LCD::Print(F("HOST "));    LCD::Print(MQTT::IP);
         LCD::SetCursor(0,2);
-        LCD::Print("PORT ");    LCD::Print(MQTT::port);
+        LCD::Print(F("PORT "));    LCD::Print(MQTT::port);
         LCD::SetCursor(0,3);
-        LCD::Print("ID ");      LCD::Print(MQTT::groupId);
+        LCD::Print(F("ID "));      LCD::Print(MQTT::groupId);
     }
 #endif
 
     void Bootmessage(void)
     {
         LCD::Clear();
-        LCD::Print("ARDUINO BOOT ONLINE");
+        LCD::Print(F("ARDUINO BOOT ONLINE"));
     }
 
     void Default(void)
     {
         LCD::Clear();
-        LCD::Print("Unmapped key");
+        LCD::Print(F("Unmapped key"));
+    }
+
+    void Playlist(void)
+    {
+        MusicPlayer::playSong();
+        Keypad::Default();
     }
 
     inline void Init(void)
     {
-    #ifdef KEYPAD
-        for(uint8_t i=0 ; i < Keypad::num_keys ; i++)
-            Keypad::AttachKeyHandler(i,Default);
-    #ifdef NET
-        Keypad::AttachKeyHandler(KEY(A),IPstats);
-        Keypad::AttachKeyHandler(KEY(B),HWstats);
-        Keypad::AttachKeyHandler(KEY(C),MQTTstats);
-    #endif
-        Keypad::AttachKeyHandler(KEY(D),Summary);
-        Keypad::AttachKeyHandler(KEY(STAR),WindDirection);
-        Keypad::AttachKeyHandler(KEY(HASH),WindSpeed);
-
-        Keypad::AttachKeyHandler(KEY(5),MusicPlayer::playSong);
-    #endif
         Bootmessage();
+    }
+
+    inline void Exec(void)
+    {
+        switch(Keypad::keycode)
+        {
+        #ifdef NET
+            case KEY(A):    IPstats();          break;
+            case KEY(B):    HWstats();          break;
+            case KEY(C):    MQTTstats();        break;
+        #endif
+            case KEY(D):    Summary();          break;
+            case KEY(STAR): WindDirection();    break;
+            case KEY(HASH): WindSpeed();        break;
+            case KEY(5):    Playlist();         break;
+            default:        Default();          break;
+        }
     }
 }
