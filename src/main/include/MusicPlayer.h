@@ -19,15 +19,13 @@ namespace MusicPlayer
   }
 
   void playSong() {
-    uint16_t repetitions = grace[0].repetitions;
+    uint16_t repetitions = grace[0].duration;
     size_t song_length = sizeof(grace) / sizeof(Note);
 
     for (int times_played = 0; times_played < repetitions; times_played++) {
       for (int note_index = 1; note_index < song_length; note_index++) {
         // 0 index used for metadata ^
-        for (int repeat_note = 0; repeat_note < grace[note_index].repetitions; repeat_note++) {
-          playNote(pin, grace[note_index].frequency, grace[note_index].duration);
-        }
+        playNote(pin, grace[note_index].frequency, grace[note_index].duration);
       }
     }
   }
