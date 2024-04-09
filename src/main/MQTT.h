@@ -61,11 +61,13 @@ namespace MQTT
                 dtostrf(WindSpeed::mean,6,1,var2);
                 sprintf(buf,"IOTJS={\"S_name1\": \"%s_WindDirection\", \"S_value1\": %s, \"S_name2\": \"%s_WindSpeed\", \"S_value2\": %s}",groupId,var1,groupId,var2);
 
+                if( not client.publish(topic.out,buf) )
+                    Serial.println(F("MQTT failed to publish"));
             #ifdef DEBUG
-                Debug();
+                else
+                    Debug();
             #endif
 
-                client.publish(topic.out,buf);
             }
 
             i = 0;

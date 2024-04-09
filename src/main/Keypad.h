@@ -4,7 +4,7 @@
  ******************************************************************************/
 namespace Keypad
 {
-    constexpr uint8_t num_keys = 4 * 4, bus_size = 1, def_key = KEY(A);
+    constexpr uint8_t num_keys = 4 * 4, bus_size = 1, def_key = KEY(STAR);
 
     volatile uint8_t keycode = def_key;
     void Default(void) { keycode = def_key; }
@@ -21,16 +21,6 @@ namespace Keypad
             };
         uint8_t offset = 007; 
     } env;
-
-#ifdef DEBUG_KEYPAD
-    volatile float voltage = 0.0;
-    void Debug(void)
-    {
-        Serial.print(F("Voltage = ")); Serial.print( voltage ); 
-        Serial.print(F(", Keycode = ")); Serial.print( keycode ); 
-        Serial.print(F(", Button = ")); Serial.println( key[keycode-1].name );
-    }
-#endif
 
     void ScanKeys(void)
     {
@@ -59,8 +49,8 @@ namespace Keypad
         }
 
     #ifdef DEBUG_KEYPAD
-        voltage = volt;
-        Debug();
+        Serial.print(F("Voltage = ")); Serial.print( volt ); 
+        Serial.println(F(", Keycode = ")); Serial.print( (int)keycode ); 
     #endif
     }
 

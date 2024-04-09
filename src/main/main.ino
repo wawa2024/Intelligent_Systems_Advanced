@@ -4,6 +4,7 @@
 #define DHCP
 #define NET
 #define KEYPAD
+#define DEBUG
 
 #include "Utils.h"
 #include "IO.h"
@@ -48,9 +49,7 @@ void setup()
 void loop()
 {
 #ifdef NET
-#ifdef MQTT
     MQTT::POST(); 
-#endif
 #endif
 
     WindDirection::Update();
@@ -58,5 +57,6 @@ void loop()
 
     Software::Exec(); 
     Keypad::ScanKeys();
+
     delay(1000);
 }

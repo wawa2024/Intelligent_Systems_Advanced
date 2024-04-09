@@ -42,10 +42,9 @@ namespace WindDirection
             t_max = t_max < tmp ? tmp : t_max;
         }
 
-        mean = sum / t_size - 0.24;
-        max = t_max         - 0.24;
-        min = t_min         - 0.24;
-
+        mean -= ( ( mean = sum / t_size ) < 0.24 ) ? 0 : 0.24 ;
+        max  -= ( ( max = t_max         ) < 0.24 ) ? 0 : 0.24 ;
+        min  -= ( ( min = t_min         ) < 0.24 ) ? 0 : 0.24 ;
     }
 
     inline void Init(void)

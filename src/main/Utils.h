@@ -30,5 +30,5 @@
 #define KEY_a               16
 
 float Voltage(uint8_t PIN) { 
-    return (float)analogRead(PIN) * (float)ref_voltage / (float)Max_ADC_Ret;
+    return ( analogRead(PIN) * ref_voltage ) / (float)Max_ADC_Ret;
 }
