@@ -8,7 +8,7 @@ struct Note {
 };
 
 Note grace[] = {
-  {100},
+  {100, 1},
   {NOTE_CS4, 75},
   {NOTE_E4, 900},
   {NOTE_GS4, 300},
