@@ -19,9 +19,11 @@ namespace MusicPlayer
           tone(pin, frequency, actualDuration);
         }
         delay_music = duration * 0.9;
+        execution_phase++;
         break;
-      case 2:
+      case 1:
         delay_music = duration - actualDuration;
+        execution_phase++;
         break;
       default:
         delay_music = 0;
@@ -52,5 +54,5 @@ namespace MusicPlayer
       }
     }
   }
-}
 */
+}
