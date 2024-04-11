@@ -48,15 +48,19 @@ void setup()
 
 void loop()
 {
-#ifdef NET
-    MQTT::POST(); 
-#endif
+    
+    if (millis() - IO::lastMillis >= 1000) {
+        IO::lastMillis = millis();
+        
+    #ifdef NET
+        MQTT::POST(); 
+    #endif
 
-    WindDirection::Update();
-    WindSpeed::Update();
+        WindDirection::Update();
+        WindSpeed::Update();
 
-    Software::Exec(); 
+        Software::Exec(); 
+    }
+
     Keypad::ScanKeys();
-
-    delay(1000);
 }

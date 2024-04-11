@@ -4,3 +4,6 @@
 
 static char buf[126] = {}, var1[8] = {}, var2[8] = {};
 
+namespace IO {
+  uint32_t lastMillis = 0;
+}
