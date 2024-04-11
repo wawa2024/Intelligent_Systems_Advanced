@@ -2,5 +2,10 @@
  * File: ./IO.h
  ******************************************************************************/
 
-char buf[128] = {}, var1[8] = {}, var2[8] = {};
+char buf[128] = {}, var1[8] = {}, var2[8] = {}; 
+namespace IO
+{
+  uint32_t lastMillis = 0;
+  bool keepPlaying = false;
+}
 

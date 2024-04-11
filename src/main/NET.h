@@ -52,14 +52,7 @@ namespace NET
         }
     }
 
-    inline void Init(void)
-    {
-    #ifdef DHCP
-        if( Ethernet.begin(mac) )
-            Serial.println(F("DHCP success"));
-        else
-            Serial.println(F("DHCP failed"));
-    #else
+    void DCHPoff(void) {
         Serial.println(F("DHCP off"));
         Ethernet.begin(
                         mac,
@@ -68,6 +61,21 @@ namespace NET
                         gw,
                         subnet
                         );
-    #endif
+    }
+
+    inline void Init(void)
+    {
+        if (Ethernet.linkStatus()) {
+        #ifdef DHCP
+            if( Ethernet.begin(mac) )
+                Serial.println(F("DHCP success"));
+            else
+                Serial.println(F("DHCP failed"));
+        #else
+            DCHPoff();
+        #endif
+        } else {
+            DCHPoff();
+        }
     }
 }

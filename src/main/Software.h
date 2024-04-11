@@ -17,6 +17,7 @@ namespace Software
 
     void Summary(void)
     {
+        IO::keepPlaying = false;
         LCD::Clear();
         LCD::Print(s_wd); 
         LCD::SetCursor(0,1);
@@ -32,6 +33,7 @@ namespace Software
 
     void Template(char* s, float max, float mean, float min, char* unit)
     {
+        IO::keepPlaying = false;
         LCD::Clear();
         LCD::Print(s);
         LCD::SetCursor(0,1);
@@ -44,6 +46,7 @@ namespace Software
 
     void WindDirection(void)
     {
+        IO::keepPlaying = false;
         Template(s_wd
                 ,WindDirection::max
                 ,WindDirection::mean
@@ -54,6 +57,7 @@ namespace Software
 
     void WindSpeed(void)
     {
+        IO::keepPlaying = false;
         Template(s_ws
                 ,WindSpeed::max
                 ,WindSpeed::mean
@@ -65,6 +69,7 @@ namespace Software
 #ifdef NET
     void IPstats(void)
     {
+        IO::keepPlaying = false;
         NET::Update::IP();
         LCD::Clear();
         LCD::Print(F("IP "));     LCD::Print(NET::ip);
@@ -78,6 +83,7 @@ namespace Software
 
     void HWstats(void)
     {
+        IO::keepPlaying = false;
         LCD::Clear();
         LCD::Print( NET::Status::Hardware() );
         LCD::SetCursor(0,1);
@@ -98,6 +104,7 @@ namespace Software
     
     void MQTTstats(void)
     {
+        IO::keepPlaying = false;
         NET::Update::IP();
         LCD::Clear();
         LCD::Print(F("MQTT "));    LCD::Print(MQTT::Checkup());
@@ -122,11 +129,11 @@ namespace Software
         LCD::Print(F("Unmapped key"));
     }
 
-    void Playlist(uint32_t lastMillis)
+    void Playlist(void)
     {
         LCD::Clear();
         LCD::Print(F("Playing Music~"));
-        MusicPlayer::playSong(lastMillis);
+        IO::keepPlaying = true;
         Keypad::Default();
     }
 
@@ -135,7 +142,7 @@ namespace Software
         Bootmessage();
     }
 
-    inline void Exec(uint32_t lastMillis)
+    inline void Exec(void)
     {
         switch(Keypad::keycode)
         {
@@ -147,7 +154,7 @@ namespace Software
             case KEY(D):    Summary();          break;
             case KEY(STAR): WindDirection();    break;
             case KEY(HASH): WindSpeed();        break;
-            case KEY(5):    Playlist(lastMillis);         break;
+            case KEY(5):    Playlist();         break;
             default:        Default();          break;
         }
     }
