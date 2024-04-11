@@ -43,7 +43,8 @@ void setup()
     Software::Init();
 #endif
 
-    delay(3000);
+//    IO::lastMillis = millis() + 2000; doesn't work
+    delay(2000);
 }
 
 void loop()
@@ -51,7 +52,7 @@ void loop()
     
     if (millis() - IO::lastMillis >= 1000) {
         IO::lastMillis = millis();
-        
+
     #ifdef NET
         MQTT::POST(); 
     #endif

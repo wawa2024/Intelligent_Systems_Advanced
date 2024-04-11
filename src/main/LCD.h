@@ -33,6 +33,7 @@ namespace LCD
         dpy.begin(env.cols,env.rows);
         dpy.noCursor();
         dpy.clear();
-        Clear(); Print(F("EXECUTING BOOT"));
+        Clear(); 
+        Print(F("EXECUTING BOOT"));
     }
 }
