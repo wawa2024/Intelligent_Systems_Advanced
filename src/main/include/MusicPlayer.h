@@ -36,6 +36,7 @@ namespace MusicPlayer
   void play() {
     if (millis() - IO::lastMillis >= delay_music) {
       if (index >= song_length) {
+        index = 0;
         IO::keepPlaying = false;
       } else {
         playNote(pin, grace[index].frequency, grace[index].duration);
