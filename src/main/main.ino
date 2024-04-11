@@ -5,6 +5,7 @@
 #define NET
 #define KEYPAD
 #define DEBUG
+#define MUSICPLAYER
 
 #include "Utils.h"
 #include "IO.h"
@@ -24,6 +25,7 @@
     #include "Software.h"
 #endif
 
+uint32_t lastMillis = 0;
 
 void setup()
 {
@@ -48,15 +50,20 @@ void setup()
 
 void loop()
 {
-#ifdef NET
-    MQTT::POST(); 
-#endif
+    if (millis() - lastMillis >= 1000) {
+        lastMillis = millis();
+    #ifdef NET
+        MQTT::POST(); 
+    #endif
 
-    WindDirection::Update();
-    WindSpeed::Update();
+        WindDirection::Update();
+        WindSpeed::Update();
 
-    Software::Exec(); 
+        Software::Exec(lastMillis); 
+    }
+
+    // possible call to music player if playmusic boolean flag is changed to true with keypad press
+    if (MusicPlayer::keepPlaying) {  MusicPlayer::play();  }
+
     Keypad::ScanKeys();
-
-    delay(1000);
 }

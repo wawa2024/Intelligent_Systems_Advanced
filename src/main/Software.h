@@ -122,11 +122,11 @@ namespace Software
         LCD::Print(F("Unmapped key"));
     }
 
-    void Playlist(void)
+    void Playlist(uint32_t lastMillis)
     {
         LCD::Clear();
         LCD::Print(F("Playing Music~"));
-        MusicPlayer::playSong();
+        MusicPlayer::playSong(lastMillis);
         Keypad::Default();
     }
 
@@ -135,7 +135,7 @@ namespace Software
         Bootmessage();
     }
 
-    inline void Exec(void)
+    inline void Exec(uint32_t lastMillis)
     {
         switch(Keypad::keycode)
         {
@@ -147,7 +147,7 @@ namespace Software
             case KEY(D):    Summary();          break;
             case KEY(STAR): WindDirection();    break;
             case KEY(HASH): WindSpeed();        break;
-            case KEY(5):    Playlist();         break;
+            case KEY(5):    Playlist(lastMillis);         break;
             default:        Default();          break;
         }
     }
