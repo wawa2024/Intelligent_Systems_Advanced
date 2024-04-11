@@ -13,8 +13,8 @@ namespace MQTT
     bool status = false;
 
     struct { char* out = "ICT4_out_2020"; } topic ;
-
-    char* groupId = "jrmlwwk2024";
+    
+    char groupId[] = "jrmlwwk2024";
 
     EthernetClient interface;
     PubSubClient client( ip, port, interface );
@@ -23,22 +23,6 @@ namespace MQTT
     {
         return status ? "CONNECTED" : "DISCONNECTED" ;
     }
-
-    #ifdef DEBUG
-    void Debug(void)
-    {
-        static char s_dot[] = ".";
-        Serial.print(F("IP "));
-        Serial.print(NET::ip);
-        Serial.print(F(" > "));
-        Serial.print(ip[0]); Serial.print(s_dot); 
-        Serial.print(ip[1]); Serial.print(s_dot); 
-        Serial.print(ip[2]); Serial.print(s_dot); 
-        Serial.print(ip[3]);
-        Serial.print(F(": MQTT package, "));
-        Serial.println(buf);
-    }
-    #endif
 
     void POST(void)
     {
@@ -55,19 +39,18 @@ namespace MQTT
                     Serial.println(F("MQTT failed to connect"));
             }
 
-            if( status = client.connected() )
+            status = client.connected();
+
+            if( status )
             {
-                dtostrf(WindDirection::mean,6,1,var1);
-                dtostrf(WindSpeed::mean,6,1,var2);
+                dtostrf(WindDirection::mean,3,1,var1);
+                dtostrf(WindSpeed::mean,3,1,var2);
                 sprintf(buf,"IOTJS={\"S_name1\": \"%s_WindDirection\", \"S_value1\": %s, \"S_name2\": \"%s_WindSpeed\", \"S_value2\": %s}",groupId,var1,groupId,var2);
 
-                if( not client.publish(topic.out,buf) )
-                    Serial.println(F("MQTT failed to publish"));
             #ifdef DEBUG
-                else
-                    Debug();
+                Serial.println(buf);
             #endif
-
+                client.publish(topic.out,buf);
             }
 
             i = 0;
@@ -76,6 +59,5 @@ namespace MQTT
 
     inline void Init(void)
     {
-        status = client.connect(groupId);
     }
 }

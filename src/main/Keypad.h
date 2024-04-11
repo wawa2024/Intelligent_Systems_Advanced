@@ -4,11 +4,10 @@
  ******************************************************************************/
 namespace Keypad
 {
-    constexpr uint8_t num_keys = 4 * 4, bus_size = 1, def_key = KEY(STAR);
+    constexpr uint8_t num_keys = 4 * 4, bus_size = 1, def_key = KEY(D);
 
     volatile uint8_t keycode = def_key;
-    void Default(void) { keycode = def_key; }
-
+    inline void Default(void) { keycode = def_key; }
 
     constexpr struct { uint8_t input = A6; } pin;
 
@@ -32,11 +31,9 @@ namespace Keypad
             volt = tmp > volt ? tmp : volt;
         }
 
-        if( volt < 1 ) return;
-
         for( uint8_t i = 0 ; i < num_keys ; i++ )
         {
-            uint16_t& tmp  = env.field[i];
+            uint16_t  tmp  = env.field[i];
             uint16_t  val  = volt * 100;
             uint16_t  low  = tmp - env.offset;
             uint16_t  high = tmp + env.offset;
@@ -47,11 +44,6 @@ namespace Keypad
                 break; 
             }
         }
-
-    #ifdef DEBUG_KEYPAD
-        Serial.print(F("Voltage = ")); Serial.print( volt ); 
-        Serial.println(F(", Keycode = ")); Serial.print( (int)keycode ); 
-    #endif
     }
 
     inline void Init(void)

@@ -72,7 +72,7 @@ Note grace[] = {
   {NOTE_E3, 240},
   {NOTE_B2, 240},
   {NOTE_CS3, 1920},
-
+/*
   {NOTE_B2, 120},
   {NOTE_CS3, 120},
   {NOTE_E3, 120},
@@ -115,7 +115,7 @@ Note grace[] = {
   {NOTE_B3, 120},
   {NOTE_GS3, 120},
   {NOTE_CS4, 720},
-
+*/
   {NOTE_CS4, 240},
   {NOTE_CS4, 240},
   {NOTE_DS4, 240},

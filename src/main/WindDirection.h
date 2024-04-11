@@ -33,7 +33,7 @@ namespace WindDirection
 
         Fill();
 
-        for( uint8_t i=0 ; i < t_size ; i++ )
+        for( uint8_t i = 0 ; i < t_size ; i++ )
         {
             float& tmp = t_array[i];
             sum += tmp;
