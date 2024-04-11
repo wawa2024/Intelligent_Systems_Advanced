@@ -37,7 +37,7 @@ namespace WindSpeed
            uint16_t tmp = t_array[i];
            sum += tmp;
            t_max = t_max < tmp ? tmp : t_max;
-           t_min = t_min > tmp ? tmp : t_max;
+           t_min = t_min > tmp ? tmp : t_min;
         }
 
         mean    = sum / t_size * 0.699;

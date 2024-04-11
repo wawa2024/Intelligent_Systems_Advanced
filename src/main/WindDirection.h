@@ -21,17 +21,19 @@ namespace WindDirection
         return mapd( Voltage( pin.input ) , 0 , 3.8 , 0 , 359 );
     }
 
-    void Fill(void)
+    void Refresh(void)
     {
-        for( uint8_t i=0 ; i < t_size ; i++)
-            t_array[i] = Calculate();
+        static uint8_t i=0; 
+        i = i < 10 ? i : 0;
+        t_array[i] = Calculate();
+        i++;
     }
 
     void Update(void)
     {
-        float sum = 0, t_min = 1000, t_max = 0;
+        Refresh();
 
-        Fill();
+        float sum = 0, t_min = 1000, t_max = 0;
 
         for( uint8_t i = 0 ; i < t_size ; i++ )
         {
@@ -50,6 +52,7 @@ namespace WindDirection
     inline void Init(void)
     {
         pinMode(pin.input,INPUT);
-        Fill();
+        for(uint8_t i = 0 ; i < 10 ; i++)
+            Refresh();
     }
 }
